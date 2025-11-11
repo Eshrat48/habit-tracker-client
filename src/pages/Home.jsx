@@ -1,10 +1,11 @@
 // src/pages/Home.jsx
 
 import React from 'react';
-// Assuming your components are located in a 'components' directory
 import HeroBanner from '../components/HeroBanner'; 
 // Placeholder for the next component you will build
 // import FeaturedHabits from '../components/FeaturedHabits'; 
+import Testimonials from '../components/Testimonials';
+import WhyBuildHabits from '../components/WhyBuildHabits';
 
 const Home = () => {
   return (
@@ -65,6 +66,8 @@ const Home = () => {
 
       {/* 4. EXTRA RELEVANT SECTIONS (2 of your choice) [cite: 41, 52] */}
       {/* You can add your two custom sections here */}
+      <WhyBuildHabits />
+      <Testimonials />
       
     </div>
   );
