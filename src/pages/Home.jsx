@@ -7,6 +7,7 @@ import HeroBanner from '../components/HeroBanner';
 import Testimonials from '../components/Testimonials';
 import WhyBuildHabits from '../components/WhyBuildHabits';
 import HowItWorks from '../components/HowItWorks';
+import StatsSection from '../components/StatsSection';
 
 const Home = () => {
   return (
@@ -70,6 +71,7 @@ const Home = () => {
       <WhyBuildHabits />
       <HowItWorks />
       <Testimonials />
+      <StatsSection />
       
     </div>
   );

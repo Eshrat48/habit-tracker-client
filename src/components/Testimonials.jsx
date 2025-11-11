@@ -28,7 +28,6 @@ const testimonialsData = [
 const Testimonials = () => {
     // Styling constants for consistency with your Footer's inline style approach
     const containerStyle = {
-        paddingTop: '6rem',
         paddingBottom: '6rem',
         backgroundColor: '#ffffff', // White background
     };
