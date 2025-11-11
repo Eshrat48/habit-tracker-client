@@ -6,6 +6,7 @@ import HeroBanner from '../components/HeroBanner';
 // import FeaturedHabits from '../components/FeaturedHabits'; 
 import Testimonials from '../components/Testimonials';
 import WhyBuildHabits from '../components/WhyBuildHabits';
+import HowItWorks from '../components/HowItWorks';
 
 const Home = () => {
   return (
@@ -67,6 +68,7 @@ const Home = () => {
       {/* 4. EXTRA RELEVANT SECTIONS (2 of your choice) [cite: 41, 52] */}
       {/* You can add your two custom sections here */}
       <WhyBuildHabits />
+      <HowItWorks />
       <Testimonials />
       
     </div>

@@ -60,7 +60,7 @@ const Header = () => {
                     onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
                     onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
                     >
-                        <img src={defaultUserPhoto} alt="Habit Icon" style={{ width: '28px', height: '28px', borderRadius: '4px' }} />
+                        <img src={defaultUserPhoto} alt="Habit Icon" style={{ width: '40px', height: '40px', borderRadius: '50%', objectFit: 'cover' }} />
                         HabitTracker
                     </Link>
                 </div>
