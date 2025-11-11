@@ -1,90 +1,208 @@
 // src/components/shared/Header.jsx
 
+import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../providers/AuthProvider'; // Use the exported hook
+import { useAuth } from '../../providers/AuthProvider'; 
+import defaultUserPhoto from '../../assets/habit_icon.jpg'; 
 
 const Header = () => {
-    const { user, logOut, loading } = useAuth(); // Access auth state
+    const { user, logOut, loading } = useAuth(); 
 
     const handleLogout = () => {
         logOut()
-            .then(() => {
-                toast.success('You have logged out.');
-            })
+            .then(() => toast.success('You have logged out.'))
             .catch(error => {
                 console.error(error);
                 toast.error('Logout failed.');
             });
     };
 
-    // Show loading spinner/message while Firebase checks auth
     if (loading) {
-        // Use a Tailwind spinner for a better UX than plain text
-        return <div className="text-center p-4">
-            <span className="loading loading-spinner loading-lg text-primary"></span>
-        </div>; 
+        return (
+            <div style={{ textAlign: 'center', padding: '1rem' }}>
+                <span className="loading loading-spinner loading-lg text-indigo-600"></span>
+            </div>
+        );
     }
 
-    const navLinks = (
-        <>
-            <li><NavLink to="/" className={({ isActive }) => isActive ? "font-bold text-primary" : ""}>Home</NavLink></li>
-            <li><NavLink to="/browse" className={({ isActive }) => isActive ? "font-bold text-primary" : ""}>Browse Public Habits</NavLink></li>
-            
-            {/* Show private links only if user is logged in */}
-            {user && (
-                <>
-                    <li><NavLink to="/add-habit" className={({ isActive }) => isActive ? "font-bold text-primary" : ""}>Add Habit</NavLink></li>
-                    <li><NavLink to="/my-habits" className={({ isActive }) => isActive ? "font-bold text-primary" : ""}>My Habits</NavLink></li>
-                </>
-            )}
-        </>
-    );
-
     return (
-        <nav className="navbar bg-base-100 shadow-lg sticky top-0 z-10">
-            <div className="navbar-start">
-                <Link to="/" className="btn btn-ghost text-xl font-extrabold text-indigo-600">HabitHub</Link>
-            </div>
+        <header style={{ 
+            position: 'sticky', 
+            top: 0, 
+            zIndex: 50, 
+            backgroundColor: '#ffffff',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+            width: '100%'
+        }}>
+            <nav style={{
+                maxWidth: '1280px',
+                margin: '0 auto',
+                padding: '1rem 2rem',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '2rem'
+            }}>
+                
+                {/* Logo - Left */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexShrink: 0 }}>
+                    <Link to="/" style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: '0.5rem',
+                        fontSize: '1.5rem',
+                        fontWeight: 'bold',
+                        color: '#111827',
+                        textDecoration: 'none',
+                        transition: 'opacity 0.3s'
+                    }}
+                    onMouseEnter={(e) => e.currentTarget.style.opacity = '0.8'}
+                    onMouseLeave={(e) => e.currentTarget.style.opacity = '1'}
+                    >
+                        <img src={defaultUserPhoto} alt="Habit Icon" style={{ width: '28px', height: '28px', borderRadius: '4px' }} />
+                        HabitTracker
+                    </Link>
+                </div>
 
-            <div className="navbar-center hidden lg:flex">
-                <ul className="menu menu-horizontal px-1 space-x-2">
-                    {navLinks}
-                </ul>
-            </div>
+                {/* Navigation - Center */}
+                <div style={{ 
+                    display: 'flex',
+                    gap: '2rem',
+                    alignItems: 'center',
+                    flex: 1,
+                    justifyContent: 'center'
+                }}>
+                    <NavLink
+                        to="/"
+                        style={({ isActive }) => ({
+                            color: isActive ? '#7c3aed' : '#374151',
+                            textDecoration: 'none',
+                            fontWeight: isActive ? '600' : '400',
+                            borderBottom: isActive ? '2px solid #7c3aed' : 'none',
+                            paddingBottom: '0.5rem',
+                            transition: 'all 0.3s',
+                            cursor: 'pointer'
+                        })}
+                    >
+                        Home
+                    </NavLink>
+                    <NavLink
+                        to="/browse"
+                        style={({ isActive }) => ({
+                            color: isActive ? '#7c3aed' : '#374151',
+                            textDecoration: 'none',
+                            fontWeight: isActive ? '600' : '400',
+                            borderBottom: isActive ? '2px solid #7c3aed' : 'none',
+                            paddingBottom: '0.5rem',
+                            transition: 'all 0.3s',
+                            cursor: 'pointer'
+                        })}
+                    >
+                        Browse Public Habits
+                    </NavLink>
+                    {user && (
+                        <>
+                            <NavLink
+                                to="/add-habit"
+                                style={({ isActive }) => ({
+                                    color: isActive ? '#7c3aed' : '#374151',
+                                    textDecoration: 'none',
+                                    fontWeight: isActive ? '600' : '400',
+                                    borderBottom: isActive ? '2px solid #7c3aed' : 'none',
+                                    paddingBottom: '0.5rem',
+                                    transition: 'all 0.3s',
+                                    cursor: 'pointer'
+                                })}
+                            >
+                                Add Habit
+                            </NavLink>
+                            <NavLink
+                                to="/my-habits"
+                                style={({ isActive }) => ({
+                                    color: isActive ? '#7c3aed' : '#374151',
+                                    textDecoration: 'none',
+                                    fontWeight: isActive ? '600' : '400',
+                                    borderBottom: isActive ? '2px solid #7c3aed' : 'none',
+                                    paddingBottom: '0.5rem',
+                                    transition: 'all 0.3s',
+                                    cursor: 'pointer'
+                                })}
+                            >
+                                My Habits
+                            </NavLink>
+                        </>
+                    )}
+                </div>
 
-            <div className="navbar-end">
-                {user ? (
-                    // --- LOGGED IN VIEW: User Photo/Dropdown ---
-                    <div className="dropdown dropdown-end">
-                        <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar tooltip tooltip-bottom" data-tip={user.displayName || user.email}>
-                            <div className="w-10 rounded-full border-2 border-indigo-600">
-                                <img 
-                                    alt={user.displayName || "User"} 
-                                    // Use user photo or a default fallback image
-                                    src={user.photoURL || "https://i.ibb.co/6P6Xg4Z/placeholder-user.png"} 
-                                />
-                            </div>
+                {/* Auth - Right */}
+                <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '1.5rem',
+                    flexShrink: 0
+                }}>
+                    {!user ? (
+                        <>
+                            <Link
+                                to="/login"
+                                style={{
+                                    color: '#374151',
+                                    textDecoration: 'none',
+                                    fontWeight: '500',
+                                    transition: 'color 0.3s',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseEnter={(e) => e.currentTarget.style.color = '#7c3aed'}
+                                onMouseLeave={(e) => e.currentTarget.style.color = '#374151'}
+                            >
+                                Login
+                            </Link>
+                            <Link
+                                to="/register"
+                                style={{
+                                    background: 'linear-gradient(to right, #6366f1, #a855f7, #9333ea)',
+                                    color: '#ffffff',
+                                    padding: '0.5rem 1.5rem',
+                                    borderRadius: '9999px',
+                                    textDecoration: 'none',
+                                    fontWeight: '600',
+                                    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+                                    transition: 'all 0.3s',
+                                    display: 'inline-block',
+                                    cursor: 'pointer'
+                                }}
+                                onMouseEnter={(e) => {
+                                    e.currentTarget.style.opacity = '0.95';
+                                    e.currentTarget.style.transform = 'scale(1.05)';
+                                    e.currentTarget.style.boxShadow = '0 8px 12px rgba(0,0,0,0.15)';
+                                }}
+                                onMouseLeave={(e) => {
+                                    e.currentTarget.style.opacity = '1';
+                                    e.currentTarget.style.transform = 'scale(1)';
+                                    e.currentTarget.style.boxShadow = '0 4px 6px rgba(0,0,0,0.1)';
+                                }}
+                            >
+                                Sign Up
+                            </Link>
+                        </>
+                    ) : (
+                        <div className="dropdown dropdown-end">
+                            <button className="btn btn-ghost btn-circle avatar">
+                                <div className="w-10 rounded-full border-2" style={{ borderColor: '#7c3aed' }}>
+                                    <img src={user.photoURL || defaultUserPhoto} alt={user.displayName || 'User'} />
+                                </div>
+                            </button>
+                            <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">
+                                <li><span style={{ fontWeight: 'bold' }}>{user.displayName || 'User'}</span></li>
+                                <li><span style={{ fontSize: '0.875rem', color: '#6b7280' }}>{user.email}</span></li>
+                                <li><button onClick={handleLogout} style={{ color: '#dc2626' }}>Logout</button></li>
+                            </ul>
                         </div>
-                        <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow-lg bg-base-100 rounded-box w-52 border border-gray-200">
-                            <li className="font-bold p-2 truncate">Name: {user.displayName || 'N/A'}</li>
-                            <li className="text-sm p-2 text-gray-500 truncate">Email: {user.email}</li>
-                            <li>
-                                <button onClick={handleLogout} className="btn btn-sm btn-error w-full mt-2 text-white">
-                                    Log out
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                ) : (
-                    // --- NOT LOGGED IN VIEW: Login/Signup Buttons ---
-                    <div className="flex gap-2">
-                        <Link to="/login" className="btn btn-outline btn-indigo-600">Login</Link>
-                        <Link to="/register" className="btn bg-indigo-600 text-white hover:bg-indigo-700">Signup</Link>
-                    </div>
-                )}
-            </div>
-        </nav>
+                    )}
+                </div>
+            </nav>
+        </header>
     );
 };
 

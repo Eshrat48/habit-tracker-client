@@ -1,19 +1,28 @@
 // src/layouts/MainLayout.jsx
 
-import { Outlet } from 'react-router-dom';
-import Header from '../components/shared/Header';
-import Footer from '../components/shared/Footer';
+import React from 'react';
+import { Outlet, useLocation } from 'react-router-dom';
+import Header from '../components/shared/Header'; 
+import Footer from '../components/shared/Footer'; 
 
 const MainLayout = () => {
+    const location = useLocation();
+
+    // The router's errorElement handles the 404 page, so we keep the layout simple here.
+    const isErrorPage = location.pathname === '/404' || location.pathname === '/error';
+
     return (
-        <div>
-            <Header /> 
+        <div className="flex flex-col min-h-screen bg-white"> 
             
-            {/* Tailwind/DaisyUI class for minimum height to push footer down */}
-            <main className="min-h-[calc(100vh-250px)]"> 
+            {/* Header / Navbar */}
+            <Header /> 
+
+            {/* Main Content Area (Routes are rendered here) */}
+            <main className="flex-grow"> 
                 <Outlet />
             </main>
-            
+
+            {/* Footer Section */}
             <Footer />
         </div>
     );
