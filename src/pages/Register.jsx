@@ -4,12 +4,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth'; 
 import toast from 'react-hot-toast'; 
-import { User, Mail, Lock, Link, LogIn } from 'lucide-react'; // Remember to install lucide-react
+import { User, Mail, Lock, Link, LogIn } from 'lucide-react';
 
 const Register = () => {
     // --- State and Hooks ---
     const navigate = useNavigate();
-    const { createUser, updateUserProfile, googleLogin } = useAuth();
+    // 👇 NEW: Destructure saveUserToDB from useAuth
+    const { createUser, updateUserProfile, googleLogin, saveUserToDB } = useAuth();
     
     const [formData, setFormData] = useState({
         fullName: '',
@@ -49,12 +50,25 @@ const Register = () => {
         setIsSubmitting(true);
         setError('');
         try {
+            // googleLogin in AuthProvider now handles MongoDB save
             await googleLogin();
             toast.success('Registration successful with Google!');
             navigate('/');
         } catch (err) {
-            setError(err.message || 'Google sign-in failed. Please try again.');
-            toast.error('Google sign-in failed.');
+            let errorMessage = 'Google sign-in failed. Please try again.';
+            
+            // Handle specific error codes
+            if (err.message?.includes('popup')) {
+                errorMessage = err.message; // Use the detailed message from AuthProvider
+            } else if (err.code === 'auth/network-request-failed') {
+                errorMessage = 'Network error. Please check your connection and try again.';
+            } else if (err.message) {
+                errorMessage = err.message;
+            }
+            
+            console.error('Google sign-in error:', err);
+            setError(errorMessage);
+            toast.error(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -69,6 +83,7 @@ const Register = () => {
         
         if (!isFormValid) {
             setError('Please correct the validation errors before submitting.');
+            toast.error('Validation failed.');
             return;
         }
 
@@ -79,21 +94,48 @@ const Register = () => {
 
         try {
             // 1. Create User in Firebase Authentication
-            await createUser(email, password);
+            const result = await createUser(email, password);
+            const user = result.user; // Get the user object after creation
+            
             // 2. Update User Profile with Name and PhotoURL
             await updateUserProfile(fullName, photoURL || null);
+
+            // 3. 🚨 NEW STEP: Save user data to MongoDB 🚨
+            const userData = {
+                email: user.email,
+                fullName: fullName,
+                photoURL: photoURL || null,
+                firebaseUID: user.uid,
+            };
+            
+            try {
+                await saveUserToDB(userData); // This calls the server API to save to MongoDB
+            } catch (dbError) {
+                console.error('MongoDB save error (non-critical):', dbError);
+                // Don't block the user - they're already authenticated in Firebase
+                toast.success('Account created! (Some data sync delayed)');
+            }
             
             toast.success('Registration successful! Welcome.');
             navigate('/');
 
         } catch (err) {
             let errorMessage = 'Registration failed. Please check your details.';
+            
+            // Handle specific Firebase error codes
             if (err.code === 'auth/email-already-in-use') {
                 errorMessage = 'This email is already registered. Please try logging in.';
-            } else {
-                 errorMessage = err.message;
+            } else if (err.code === 'auth/weak-password') {
+                errorMessage = 'Password is too weak. Please use a stronger one.';
+            } else if (err.code === 'auth/invalid-email') {
+                errorMessage = 'Invalid email address. Please check and try again.';
+            } else if (err.code === 'auth/network-request-failed') {
+                errorMessage = 'Network error. Please check your internet connection.';
+            } else if (err.message) {
+                errorMessage = err.message;
             }
 
+            console.error('Registration error:', err);
             setError(errorMessage);
             toast.error(errorMessage);
 
@@ -103,8 +145,8 @@ const Register = () => {
     };
 
     const ValidationItem = ({ isValid, children }) => (
-        <li className={`flex items-center text-sm ${isValid ? 'text-success' : 'text-error'}`}>
-            <span className="mr-1">
+        <li style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: isValid ? '#10b981' : '#ef4444' }}>
+            <span style={{ marginRight: '4px' }}>
                 {isValid ? '✓' : '•'}
             </span>
             {children}
@@ -138,7 +180,7 @@ const Register = () => {
 
                         {/* Full Name */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Full Name</label>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Name</label>
                             <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
                                 <div style={{ padding: '10px', color: '#9ca3af' }}><User style={{ width: 18, height: 18 }} /></div>
                                 <input
@@ -155,7 +197,7 @@ const Register = () => {
 
                         {/* Email */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Email Address</label>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Email</label>
                             <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
                                 <div style={{ padding: '10px', color: '#9ca3af' }}><Mail style={{ width: 18, height: 18 }} /></div>
                                 <input
@@ -172,7 +214,7 @@ const Register = () => {
 
                         {/* Photo URL */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Photo URL (Optional)</label>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Photo URL</label>
                             <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
                                 <div style={{ padding: '10px', color: '#9ca3af' }}><Link style={{ width: 18, height: 18 }} /></div>
                                 <input
@@ -201,13 +243,25 @@ const Register = () => {
                                     required
                                 />
                             </div>
-                            <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '8px' }}>Must be at least 6 characters with uppercase and lowercase letters</p>
+                            
+                            {/* Validation Requirements List */}
+                            <ul style={{ listStyle: 'none', paddingLeft: '0', marginTop: '8px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
+                                <ValidationItem isValid={passwordValidation.minLength}>
+                                    Length must be at least **6 characters**
+                                </ValidationItem>
+                                <ValidationItem isValid={passwordValidation.hasUppercase}>
+                                    Must have an **Uppercase** letter
+                                </ValidationItem>
+                                <ValidationItem isValid={passwordValidation.hasLowercase}>
+                                    Must have a **Lowercase** letter
+                                </ValidationItem>
+                            </ul>
                         </div>
 
                         {/* Submit */}
                         <button
                             type="submit"
-                            style={{ width: '100%', marginTop: '6px', borderRadius: '10px', padding: '10px 12px', fontSize: '14px', fontWeight: 600, color: '#fff', background: 'linear-gradient(90deg,#6366f1,#a855f7)', border: 'none', cursor: isSubmitting ? 'default' : 'pointer', opacity: isSubmitting ? 0.7 : 1 }}
+                            style={{ width: '100%', marginTop: '6px', borderRadius: '10px', padding: '10px 12px', fontSize: '14px', fontWeight: 600, color: '#fff', background: 'linear-gradient(90deg,#6366f1,#a855f7)', border: 'none', cursor: isSubmitting || !isFormValid ? 'default' : 'pointer', opacity: isSubmitting || !isFormValid ? 0.7 : 1 }}
                             disabled={!isFormValid || isSubmitting}
                         >
                             {isSubmitting ? 'Creating Account...' : 'Create Account'}
@@ -234,7 +288,11 @@ const Register = () => {
                     </form>
 
                     {/* Sign in link */}
-                    <p style={{ textAlign: 'center', fontSize: '13px', color: '#374151', marginTop: '18px' }}>Already have an account? <button type="button" onClick={onLoginRedirect} style={{ color: '#7c3aed', fontWeight: 600, marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer' }}>Sign in</button></p>
+                    <p style={{ textAlign: 'center', fontSize: '13px', color: '#374151', marginTop: '18px' }}>Already have an account? 
+                        <button type="button" onClick={onLoginRedirect} style={{ color: '#7c3aed', fontWeight: 600, marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer' }}>
+                            Sign in
+                        </button>
+                    </p>
 
                 </div>
             </div>

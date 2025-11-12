@@ -3,7 +3,7 @@
 import React from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import toast from 'react-hot-toast';
-import { useAuth } from '../../providers/AuthProvider'; 
+import useAuth from '../../hooks/useAuth'; 
 import defaultUserPhoto from '../../assets/habit_icon.jpg'; 
 
 const Header = () => {
@@ -189,8 +189,8 @@ const Header = () => {
                     ) : (
                         <div className="dropdown dropdown-end">
                             <button className="btn btn-ghost btn-circle avatar">
-                                <div className="w-10 rounded-full border-2" style={{ borderColor: '#7c3aed' }}>
-                                    <img src={user.photoURL || defaultUserPhoto} alt={user.displayName || 'User'} />
+                                <div className="w-10 rounded-full border-2" style={{ borderColor: '#7c3aed', width: '40px', height: '40px', overflow: 'hidden' }}>
+                                    <img src={user.photoURL || defaultUserPhoto} alt={user.displayName || 'User'} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                                 </div>
                             </button>
                             <ul className="dropdown-content menu p-2 shadow bg-base-100 rounded-box w-52">

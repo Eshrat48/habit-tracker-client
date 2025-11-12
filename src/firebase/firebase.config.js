@@ -1,9 +1,9 @@
 // src/firebase/firebase.config.js
 
 import { initializeApp } from "firebase/app";
-import { getAuth } from "firebase/auth"; 
+import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth"; 
 
-// 1. Get configuration variables from .env.local
+// 1. Get configuration variables from .env.local or environment
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -13,33 +13,33 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID
 };
 
+// Check if all required config values exist
+const hasValidConfig = Object.values(firebaseConfig).every(val => val && val.trim && val.trim() !== '');
+
 let app;
 let auth;
 
-// CRITICAL FIX: Only attempt to initialize Firebase if the API Key exists.
-if (firebaseConfig.apiKey) {
-    // 2. Initialize the app
-    app = initializeApp(firebaseConfig);
-
-    // 3. Initialize Auth
-    auth = getAuth(app);
+if (hasValidConfig) {
+    try {
+        // 2. Initialize the app
+        app = initializeApp(firebaseConfig);
+        
+        // 3. Initialize Auth
+        auth = getAuth(app);
+        
+        // 4. Set persistence to LOCAL to keep user logged in
+        setPersistence(auth, browserLocalPersistence).catch(error => {
+            console.warn("Error setting persistence:", error);
+        });
+        
+        console.log("✅ Firebase initialized successfully");
+    } catch (error) {
+        console.error("❌ Firebase initialization error:", error);
+        auth = null;
+    }
 } else {
-    // 4. Placeholder for development without keys (prevents crash)
-    console.warn("Firebase API Key is missing. Auth functionality is disabled.");
-    // Create a dummy object for 'auth' to prevent crashes in AuthProvider
-    auth = {
-        currentUser: null,
-        onAuthStateChanged: (callback) => { 
-            callback(null); 
-            return () => {}; // Return an unsubscribe function
-        },
-        // Provide dummy functions that will be used in AuthProvider
-        signInWithEmailAndPassword: () => Promise.reject(new Error("Firebase not initialized")),
-        createUserWithEmailAndPassword: () => Promise.reject(new Error("Firebase not initialized")),
-        signOut: () => Promise.resolve(),
-        updateProfile: () => Promise.resolve(),
-        signInWithPopup: () => Promise.reject(new Error("Firebase not initialized")),
-    };
+    console.warn("⚠️  Firebase configuration is incomplete. Missing or empty environment variables. Please create a .env.local file with your Firebase credentials.");
+    auth = null;
 }
 
 export default auth;
