@@ -207,3 +207,30 @@ const MyHabits = () => {
 };
 
 export default MyHabits;
+
+// src/api/habitApi.js (Add this new function)
+
+// ... (keep existing imports and functions: fetchMyHabits, deleteHabit, etc.) ...
+
+/**
+ * Creates a new habit (requires authentication token).
+ * @param {object} habitData - The habit fields (title, category, etc.).
+ * @param {string} token - Firebase ID token.
+ */
+export const createHabit = async (habitData, token) => {
+    try {
+        // Calls POST http://localhost:3000/api/v1/habits
+        const response = await axios.post(API_URL, habitData, {
+            headers: {
+                Authorization: `Bearer ${token}`, // Attach token for verifyToken middleware
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating habit:', error);
+        throw error;
+    }
+};
+
+// ... (export other functions)

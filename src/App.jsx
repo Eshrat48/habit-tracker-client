@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from 'react-hot-toast'; 
 import AuthProvider from './providers/AuthProvider'; 
 import MainLayout from './layouts/MainLayout';
+import PrivateRoute from './routes/PrivateRoute';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -37,13 +38,21 @@ const router = createBrowserRouter([
       },
       // PRIVATE ROUTES (Will be protected later)
       {
-        path: "/add-habit",
-        element: <AddHabit />, 
-      },
-      {
-        path: "/my-habits",
-        element: <MyHabits />,
-      },
+    path: "/add-habit",
+    element: (
+        <PrivateRoute>
+            <AddHabit />
+        </PrivateRoute>
+    ), 
+},
+{
+    path: "/my-habits",
+    element: (
+        <PrivateRoute>
+            <MyHabits />
+        </PrivateRoute>
+    ),
+},
     ],
   },
 ]);

@@ -45,6 +45,26 @@ export const fetchMyHabits = async (token) => {
     }
 };
 
+/**
+ * Creates a new habit (requires authentication token).
+ * * 👇 THIS IS THE MISSING FUNCTION
+ */
+export const createHabit = async (habitData, token) => {
+    try {
+        // Calls POST http://localhost:3000/api/v1/habits
+        const response = await axios.post(API_URL, habitData, {
+            headers: {
+                Authorization: `Bearer ${token}`, 
+                'Content-Type': 'application/json'
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating habit:', error);
+        throw error;
+    }
+};
+
 // 👇 NEW: Deletes a habit by ID
 export const deleteHabit = async (habitId, token) => {
     try {
