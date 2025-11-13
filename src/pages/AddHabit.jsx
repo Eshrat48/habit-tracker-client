@@ -36,8 +36,15 @@ const AddHabit = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        console.log('=== AddHabit Form Submission ===');
+        console.log('Auth Loading:', authLoading);
+        console.log('User:', user);
+        console.log('Form Data:', formData);
+
         if (authLoading || !user) {
-            toast.error('Authentication loading or user not found. Try logging in again.');
+            const msg = 'Authentication loading or user not found. Try logging in again.';
+            console.error(msg);
+            toast.error(msg);
             return;
         }
 
@@ -56,6 +63,7 @@ const AddHabit = () => {
 
         try {
             const token = await user.getIdToken();
+            console.log('Token obtained:', token ? 'YES' : 'NO');
             
             // If a file is selected and an IMGBB key is present, attempt upload
             let imageUrl = formData.image || null;
@@ -79,16 +87,19 @@ const AddHabit = () => {
                 isPublic: formData.isPublic,
             };
 
-            console.log('About to send habit data:', habitData);
-            await createHabit(habitData, token);
+            console.log('📤 Sending to backend:', habitData);
+            console.log('📤 With token:', token.substring(0, 30) + '...');
+            const response = await createHabit(habitData, token);
+            console.log('✅ Backend response:', response);
             
             toast.success('Habit added successfully! Time to get started.', { id: submitToastId });
             navigate('/my-habits');
 
         } catch (error) {
-            console.error('Habit creation failed:', error);
+            console.error('❌ Habit creation failed:', error);
             console.error('Error response:', error?.response?.data);
             console.error('Error status:', error?.response?.status);
+            console.error('Error message:', error?.message);
             const errorMessage = error?.response?.data?.message || error?.message || 'Failed to create habit.';
             toast.error(errorMessage, { id: submitToastId });
         } finally {

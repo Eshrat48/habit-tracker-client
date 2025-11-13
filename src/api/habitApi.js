@@ -139,6 +139,8 @@ export const updateHabit = async (habitId, habitData, token) => {
     }
 };
 
+// src/api/habitApi.js (NEW AND CORRECTED)
+
 /**
  * @desc Marks a habit complete for today.
  * @route PATCH /api/v1/habits/:id/complete
@@ -146,7 +148,8 @@ export const updateHabit = async (habitId, habitData, token) => {
  */
 export const completeHabit = async (habitId, token) => {
     try {
-        const response = await axios.patch(`${API_URL}/${habitId}/complete`, null, {
+        // 🛑 FIX: Use an empty object {} instead of null for the body
+        const response = await axios.patch(`${API_URL}/${habitId}/complete`, {}, { 
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
