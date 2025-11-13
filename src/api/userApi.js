@@ -1,6 +1,6 @@
 // src/api/userApi.js
 import axios from 'axios';
-const USER_API_URL = 'http://localhost:3000/api/v1/users'; 
+const USER_API_URL = 'https://habit-tracker-server-pi.vercel.app/api/v1/users'; 
 export const saveUserToDB = async (userData) => {
     try {
         const response = await axios.post(`${USER_API_URL}/register-success`, userData);

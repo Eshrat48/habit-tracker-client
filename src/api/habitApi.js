@@ -1,6 +1,6 @@
 // src/api/habitApi.js
 import axios from 'axios';
-const API_URL = 'http://localhost:3000/api/v1/habits';
+const API_URL = 'https://habit-tracker-server-pi.vercel.app/api/v1/habits';
 
 /**
  * @desc Fetches the 6 newest public habits for the Home Page's Featured Section.
