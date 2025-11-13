@@ -1,6 +1,6 @@
 // src/components/HowItWorks.jsx
-
 import React from 'react';
+import useTheme from '../hooks/useTheme.js'; 
 
 const stepsData = [
     {
@@ -21,20 +21,26 @@ const stepsData = [
 ];
 
 const HowItWorks = () => {
-    // Styling constants for consistency
+    const { theme } = useTheme(); 
+    const isDark = theme === 'dark';
+
+    const primaryColor = '#8b5cf6'; 
+    
     const containerStyle = {
         paddingTop: '6rem',
         paddingBottom: '6rem',
-        backgroundColor: '#ffffff', // Light gray background
+        backgroundColor: isDark ? '#111827' : '#ffffff', 
     };
 
     const contentBoxStyle = {
         maxWidth: '1200px',
         margin: '0 auto',
         padding: '3rem 1rem',
-        backgroundColor: '#e8f3ff', // White inner background
+        backgroundColor: isDark ? '#1f2937' : '#e8f3ff', 
         borderRadius: '1rem',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)', // Subtle shadow
+        boxShadow: isDark 
+            ? '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2)' 
+            : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
         textAlign: 'center',
     };
 
@@ -43,16 +49,16 @@ const HowItWorks = () => {
     };
 
     const mainTitleStyle = {
-        fontSize: '2.25rem', // text-4xl
+        fontSize: '2.25rem', 
         fontWeight: '700',
-        color: '#1f2937', // gray-900
+        color: isDark ? '#e5e7eb' : '#1f2937', 
         margin: 0,
         marginBottom: '0.5rem',
     };
 
     const subTextStyle = {
         fontSize: '1rem',
-        color: '#6b7280', // gray-500
+        color: isDark ? '#9ca3af' : '#6b7280', 
         margin: 0,
     };
 
@@ -60,12 +66,12 @@ const HowItWorks = () => {
         display: 'flex',
         justifyContent: 'space-around',
         gap: '2rem',
-        flexWrap: 'wrap', // For responsiveness
+        flexWrap: 'wrap', 
     };
 
     const stepItemStyle = {
-        flex: '0 0 30%', // About 30% width for 3 items
-        minWidth: '250px', // Ensures it looks good on smaller screens
+        flex: '0 0 30%', 
+        minWidth: '250px',
         maxWidth: '300px',
         textAlign: 'center',
     };
@@ -77,25 +83,27 @@ const HowItWorks = () => {
         width: '60px',
         height: '60px',
         borderRadius: '50%',
-        backgroundColor: '#8b5cf6', // Purple-500
+        backgroundColor: primaryColor, 
         color: '#ffffff',
         fontSize: '1.5rem',
         fontWeight: '700',
         margin: '0 auto 1.5rem auto',
-        boxShadow: '0 4px 6px rgba(139, 92, 246, 0.4)',
+        boxShadow: isDark 
+            ? `0 4px 10px ${primaryColor}66`
+            : `0 4px 6px rgba(139, 92, 246, 0.4)`,
     };
 
     const stepTitleStyle = {
         fontSize: '1.25rem',
         fontWeight: '600',
-        color: '#1f2937',
+        color: isDark ? '#e5e7eb' : '#1f2937', 
         marginBottom: '0.75rem',
         marginTop: 0,
     };
 
     const stepDescriptionStyle = {
         fontSize: '1rem',
-        color: '#6b7280',
+        color: isDark ? '#9ca3af' : '#6b7280', 
         lineHeight: '1.6',
         margin: 0,
     };

@@ -1,25 +1,41 @@
 // src/pages/MyHabits.jsx
-
 import React, { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import useAuth from '../hooks/useAuth'; 
+import useTheme from '../hooks/useTheme'; 
 import { fetchMyHabits, deleteHabit, completeHabit } from '../api/habitApi';
-import { calculateStreak } from '../utils/streakUtils'; // You'll need to create this utility
+import { calculateStreak } from '../utils/streakUtils'; 
 import { Link } from 'react-router-dom';
-import UpdateHabitModal from '../components/UpdateHabitModal'; // We'll create this next
+import UpdateHabitModal from '../components/UpdateHabitModal'; 
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const MyHabits = () => {
     const { user, loading: authLoading } = useAuth();
+    const { theme } = useTheme();
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedHabit, setSelectedHabit] = useState(null);
     const errorShownRef = useRef(false);
 
+    const isDark = theme === 'dark';
+    
+    const colors = {
+        primaryText: isDark ? '#f9fafb' : '#111827',
+        secondaryText: isDark ? '#9ca3af' : '#6b7280',
+        pageBg: isDark ? '#1f2937' : '#ffffff',
+        surfaceBg: isDark ? '#374151' : '#ffffff',
+        tableHeadBg: isDark ? '#4b5563' : '#f3f4f6',
+        tableHeadText: isDark ? '#d1d5db' : '#374151',
+        tableBorder: isDark ? '#4f5f70' : '#e5e7eb',
+        hoverBg: isDark ? '#4b5563' : '#f9fafb',
+        emptyStateBg: isDark ? '#374151' : '#ffffff',
+        emptyStateInnerBg: isDark ? '#4b5563' : '#eef2f7',
+    };
+    
     // --- Data Fetching ---
     const loadHabits = async () => {
-        if (!user) return; // Wait for user object to be available
+        if (!user) return; 
         setLoading(true);
     try {
             if (typeof user.getIdToken !== 'function') {
@@ -35,7 +51,6 @@ const MyHabits = () => {
             // Better error messaging
             const serverMessage = error?.response?.data?.message || error.message;
             console.error('Load habits error:', error);
-            // Avoid spamming toasts if user repeatedly opens the page
             if (!errorShownRef.current) {
                 if (error?.response?.status === 401) {
                     toast.error('Session expired — please sign in again.');
@@ -50,7 +65,6 @@ const MyHabits = () => {
     };
 
     useEffect(() => {
-        // Load habits when the user object is ready and not loading
         if (!authLoading && user) {
             loadHabits();
         }
@@ -69,7 +83,6 @@ const MyHabits = () => {
             const token = await user.getIdToken();
             await deleteHabit(habitId, token);
             
-            // UI Update: Filter out the deleted habit instantly
             setHabits(prevHabits => prevHabits.filter(h => h._id !== habitId));
             
             toast.success('Habit deleted successfully!', { id: deleteToast });
@@ -89,7 +102,6 @@ const MyHabits = () => {
             if (result.message.includes('already')) {
                  toast('You already completed this habit today!', { id: completeToast });
             } else {
-                // UI Update: Reload the habits to refresh the streak/completion history
                 await loadHabits(); 
                 toast.success('Habit marked complete! Well done!', { id: completeToast });
             }
@@ -106,7 +118,6 @@ const MyHabits = () => {
     };
 
     const handleUpdateSuccess = () => {
-        // Close modal and refresh the habit list
         setShowModal(false);
         setSelectedHabit(null);
         loadHabits();
@@ -114,59 +125,74 @@ const MyHabits = () => {
 
     if (loading || authLoading) {
         return (
-            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-                <div style={{ display: 'inline-block', width: '40px', height: '40px', border: '4px solid #e5e7eb', borderTop: '4px solid #6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                <p style={{ marginTop: '16px', fontSize: '16px', color: '#6b7280' }}>Loading your habits...</p>
+            <div style={{ padding: '60px 20px', textAlign: 'center', background: colors.pageBg }}>
+                <div 
+                    style={{ 
+                        display: 'inline-block', 
+                        width: '40px', 
+                        height: '40px', 
+                        border: `4px solid ${isDark ? '#4b5563' : '#e5e7eb'}`, 
+                        borderTop: '4px solid #6366f1', 
+                        borderRadius: '50%', 
+                        animation: 'spin 1s linear infinite' 
+                    }} 
+                />
+                <p style={{ marginTop: '16px', fontSize: '16px', color: colors.secondaryText }}>Loading your habits...</p>
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
     }
 
     if (!user) {
-        return <div style={{ textAlign: 'center', padding: '40px 20px', color: '#dc2626' }}>Please sign in to view your habits.</div>;
+        return <div style={{ textAlign: 'center', padding: '40px 20px', color: '#dc2626', background: colors.pageBg }}>Please sign in to view your habits.</div>;
     }
     
     // --- Render ---
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', minHeight: '100vh', background: colors.pageBg }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', margin: 0 }}>My Habits ({habits.length})</h1>
+                <h1 style={{ fontSize: '28px', fontWeight: 700, color: colors.primaryText, margin: 0 }}>My Habits ({habits.length})</h1>
                 <Link to="/add-habit" style={{ background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '10px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '14px' }}>+ Add Habit</Link>
             </div>
             
             {habits.length === 0 ? (
-                <div style={{ padding: '28px', border: '1px solid #e6e6f2', borderRadius: '12px', background: '#ffffff' }}>
-                    <div style={{ height: '260px', border: '1px solid #eef2f7', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ padding: '28px', border: `1px solid ${colors.tableBorder}`, borderRadius: '12px', background: colors.emptyStateBg }}>
+                    <div style={{ height: '260px', border: `1px solid ${colors.emptyStateInnerBg}`, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', background: colors.emptyStateInnerBg }}>
                         <div style={{ width: '68px', height: '68px', borderRadius: '9999px', background: 'rgba(99,102,241,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <span style={{ fontSize: '28px', color: '#6366f1' }}>+</span>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <p style={{ fontWeight: 600, marginBottom: '6px', margin: 0 }}>No habits yet.</p>
-                            <p style={{ color: '#6b7280', fontSize: '13px', margin: 0 }}>Create your first habit to start building better routines</p>
+                            <p style={{ fontWeight: 600, marginBottom: '6px', margin: 0, color: colors.primaryText }}>No habits yet.</p>
+                            <p style={{ color: colors.secondaryText, fontSize: '13px', margin: 0 }}>Create your first habit to start building better routines</p>
                         </div>
                         <Link to="/add-habit" style={{ marginTop: '6px', background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '8px 14px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>+ Create Habit</Link>
                     </div>
                 </div>
             ) : (
                 <div style={{ overflowX: 'auto', boxShadow: '0 20px 25px rgba(0,0,0,0.1)', borderRadius: '8px' }}>
-                    <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', background: colors.surfaceBg }}>
                         {/* Table Head */}
                         <thead>
-                            <tr style={{ background: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
-                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Title</th>
-                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Category</th>
-                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Current Streak</th>
-                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Created On</th>
-                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Actions</th>
+                            <tr style={{ background: colors.tableHeadBg, borderBottom: `1px solid ${colors.tableBorder}` }}>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: colors.tableHeadText, fontSize: '13px' }}>Title</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: colors.tableHeadText, fontSize: '13px' }}>Category</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: colors.tableHeadText, fontSize: '13px' }}>Current Streak</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: colors.tableHeadText, fontSize: '13px' }}>Created On</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: colors.tableHeadText, fontSize: '13px' }}>Actions</th>
                             </tr>
                         </thead>
                         
                         {/* Table Body */}
                         <tbody>
-                            {habits.map((habit, idx) => (
-                                <tr key={habit._id} style={{ borderBottom: '1px solid #e5e7eb', hover: { background: '#f9fafb' } }} onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
-                                    <td style={{ padding: '16px', fontWeight: 600, color: '#111827', fontSize: '14px' }}>{habit.title}</td>
-                                    <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px' }}>
+                            {habits.map((habit) => (
+                                <tr 
+                                    key={habit._id} 
+                                    style={{ borderBottom: `1px solid ${colors.tableBorder}`, transition: 'background 0.3s' }} 
+                                    onMouseEnter={(e) => e.currentTarget.style.background = colors.hoverBg} 
+                                    onMouseLeave={(e) => e.currentTarget.style.background = colors.surfaceBg}
+                                >
+                                    <td style={{ padding: '16px', fontWeight: 600, color: colors.primaryText, fontSize: '14px' }}>{habit.title}</td>
+                                    <td style={{ padding: '16px', color: colors.secondaryText, fontSize: '14px' }}>
                                         <span style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(99,102,241,0.1)', color: '#6366f1', fontSize: '12px', fontWeight: 600, borderRadius: '4px' }}>{habit.category}</span>
                                     </td>
                                     <td style={{ padding: '16px', fontSize: '14px' }}>
@@ -174,12 +200,12 @@ const MyHabits = () => {
                                             {calculateStreak(habit.completionHistory)} Days
                                         </span>
                                     </td>
-                                    <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px' }}>{new Date(habit.createdAt).toLocaleDateString()}</td>
+                                    <td style={{ padding: '16px', color: colors.secondaryText, fontSize: '14px' }}>{new Date(habit.createdAt).toLocaleDateString()}</td>
                                     <td style={{ padding: '16px' }}>
                                         <div style={{ display: 'flex', gap: '8px' }}>
                                             <button 
                                                 onClick={() => handleOpenModal(habit)}
-                                                style={{ padding: '6px 12px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                style={{ padding: '6px 12px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, transition: 'background 0.2s' }}
                                                 onMouseEnter={(e) => e.target.style.background = '#2563eb'}
                                                 onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
                                             >
@@ -187,7 +213,7 @@ const MyHabits = () => {
                                             </button>
                                             <button 
                                                 onClick={() => handleComplete(habit._id)}
-                                                style={{ padding: '6px 12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                style={{ padding: '6px 12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, transition: 'background 0.2s' }}
                                                 onMouseEnter={(e) => e.target.style.background = '#059669'}
                                                 onMouseLeave={(e) => e.target.style.background = '#10b981'}
                                             >
@@ -195,7 +221,7 @@ const MyHabits = () => {
                                             </button>
                                             <button 
                                                 onClick={() => handleDelete(habit._id)}
-                                                style={{ padding: '6px 12px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                style={{ padding: '6px 12px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600, transition: 'background 0.2s' }}
                                                 onMouseEnter={(e) => e.target.style.background = '#dc2626'}
                                                 onMouseLeave={(e) => e.target.style.background = '#ef4444'}
                                             >

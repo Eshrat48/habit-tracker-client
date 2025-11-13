@@ -1,8 +1,9 @@
-// src/App.jsx
+// src/App.jsx (Corrected)
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { Toaster } from 'react-hot-toast'; 
 import AuthProvider from './providers/AuthProvider'; 
+import { ThemeProvider } from './providers/ThemeProvider'; // 👈 Keep this import
 import MainLayout from './layouts/MainLayout';
 import PrivateRoute from './routes/PrivateRoute';
 import Home from './pages/Home';
@@ -16,67 +17,70 @@ import HabitDetail from './pages/HabitDetail';
 
 // 1. Define Routes
 const router = createBrowserRouter([
-  {
-    path: "/",
-    element: <MainLayout />,
-    errorElement: <ErrorPage />,
-    children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/browse",
-        element: <BrowsePublicHabits />,
-      },
-      // PRIVATE ROUTES (Will be protected later)
-      {
-    path: "/add-habit",
-    element: (
-        <PrivateRoute>
-            <AddHabit />
-        </PrivateRoute>
-    ), 
-},
-{
-    path: "/my-habits",
-    element: (
-        <PrivateRoute>
-            <MyHabits />
-        </PrivateRoute>
-    ),
-},
-{
-    path: "/habit-detail/:id", // :id is the MongoDB habit ID
-    element: (
-        <PrivateRoute>
-            <HabitDetail />
-        </PrivateRoute>
-    ), 
-},
-{
-        path: "*", 
-        element: <ErrorPage />, 
-    },
-    ],
-  },
+  {
+    path: "/",
+    element: <MainLayout />,
+    errorElement: <ErrorPage />,
+    children: [
+      {
+        path: "/",
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
+      {
+        path: "/browse",
+        element: <BrowsePublicHabits />,
+      },
+      // PRIVATE ROUTES
+      {
+        path: "/add-habit",
+        element: (
+            <PrivateRoute>
+                <AddHabit />
+            </PrivateRoute>
+        ), 
+      },
+      {
+        path: "/my-habits",
+        element: (
+            <PrivateRoute>
+                <MyHabits />
+            </PrivateRoute>
+        ),
+      },
+      {
+        path: "/habit-detail/:id",
+        element: (
+            <PrivateRoute>
+                <HabitDetail />
+            </PrivateRoute>
+        ), 
+      },
+      {
+        path: "*", 
+        element: <ErrorPage />, 
+      },
+    ],
+  },
 ]);
 
 // 2. Define the App component and export it as default
 export default function App() {
-  return (
-    // Only return the providers and the router itself
-    <AuthProvider>
-      <RouterProvider router={router} />
-      <Toaster />
-    </AuthProvider>
-  );
+  return (
+    // ThemeProvider must be outside to wrap everything
+    <ThemeProvider> 
+        <AuthProvider>
+            <RouterProvider router={router} />
+            {/* Toaster can be outside the router */}
+            <Toaster position="top-right" /> 
+        </AuthProvider>
+    </ThemeProvider>
+  );
 }

@@ -1,8 +1,8 @@
 // src/componentsWhyBuildHabits.jsx
 
 import React from 'react';
-// Use icons that are visually similar to the mockup
 import { FaRegCompass, FaArrowTrendUp, FaBrain, FaRegHeart } from 'react-icons/fa6'; 
+import useTheme from '../hooks/useTheme'; 
 
 const benefitsData = [
     {
@@ -28,11 +28,20 @@ const benefitsData = [
 ];
 
 const WhyBuildHabits = () => {
-    // Styling constants for consistency
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
+
+    const primaryColor = '#8b5cf6'; 
+    const cardBg = isDark ? '#1f2937' : '#ffffff';
+    const textColor = isDark ? '#e5e7eb' : '#1f2937';
+    const subTextColor = isDark ? '#9ca3af' : '#6b7280';
+    const cardBorder = isDark ? '#374151' : '#e5e7eb';
+    const iconBoxBg = isDark ? '#374151' : '#f3f4f6';
+
     const containerStyle = {
         paddingTop: '6rem',
         paddingBottom: '6rem',
-        backgroundColor: '#ffffff', // White background
+        backgroundColor: isDark ? '#111827' : '#ffffff', 
     };
 
     const headerStyle = {
@@ -41,23 +50,23 @@ const WhyBuildHabits = () => {
     };
 
     const mainTitleStyle = {
-        fontSize: '2.25rem', // text-4xl
+        fontSize: '2.25rem', 
         fontWeight: '700',
-        color: '#1f2937', // gray-900
+        color: textColor, 
         margin: 0,
         marginBottom: '0.5rem',
     };
 
     const subTextStyle = {
         fontSize: '1rem',
-        color: '#6b7280', // gray-500
+        color: subTextColor, 
         margin: 0,
     };
 
     const gridContainerStyle = {
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', // Responsive 4-column grid
-        gap: '1.5rem', // gap-6
+        gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+        gap: '1.5rem', 
         maxWidth: '1200px',
         margin: '0 auto',
         paddingLeft: '1rem',
@@ -65,36 +74,37 @@ const WhyBuildHabits = () => {
     };
 
     const cardStyle = {
-        backgroundColor: '#ffffff',
+        backgroundColor: cardBg,
         padding: '2rem',
-        borderRadius: '0.75rem', // rounded-xl
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)', // Subtle shadow
-        border: '1px solid #e5e7eb', // Border for definition
+        borderRadius: '0.75rem', 
+        boxShadow: isDark
+            ? '0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.2)'
+            : '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+        border: `1px solid ${cardBorder}`, 
         textAlign: 'left',
     };
 
     const iconBoxStyle = {
-        color: '#8b5cf6', // Purple color for the icon
-        fontSize: '2.5rem', // Icon size
+        color: primaryColor, 
+        fontSize: '2.5rem', 
         marginBottom: '1rem',
-        // Optional: container for a light background circle around the icon
         display: 'inline-flex',
         padding: '0.75rem',
         borderRadius: '50%',
-        backgroundColor: '#f3f4f6', // Light gray background
+        backgroundColor: iconBoxBg, 
     };
 
     const cardTitleStyle = {
-        fontSize: '1.25rem', // text-xl
+        fontSize: '1.25rem', 
         fontWeight: '600',
-        color: '#1f2937',
+        color: textColor,
         marginBottom: '0.5rem',
         marginTop: 0,
     };
 
     const cardDescriptionStyle = {
-        fontSize: '0.9375rem', // Slightly larger than typical small text
-        color: '#6b7280',
+        fontSize: '0.9375rem', 
+        color: subTextColor, 
         lineHeight: '1.6',
         margin: 0,
     };

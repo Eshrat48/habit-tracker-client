@@ -1,16 +1,16 @@
 // src/pages/Register.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth'; 
+import useTheme from '../hooks/useTheme'; 
 import toast from 'react-hot-toast'; 
-import { User, Mail, Lock, Link, LogIn } from 'lucide-react';
+import { User, Mail, Lock, Link as LinkIcon, LogIn } from 'lucide-react'; 
 
 const Register = () => {
     // --- State and Hooks ---
     const navigate = useNavigate();
-    // 👇 NEW: Destructure saveUserToDB from useAuth
     const { createUser, updateUserProfile, googleLogin, saveUserToDB } = useAuth();
+    const { theme } = useTheme(); 
     
     const [formData, setFormData] = useState({
         fullName: '',
@@ -25,6 +25,32 @@ const Register = () => {
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState('');
+
+    const isDark = theme === 'dark';
+    
+    const colors = {
+        pageBg: isDark ? '#1f2937' : '#f9fafb',
+        surfaceBg: isDark ? '#374151' : '#ffffff',
+        primaryText: isDark ? '#f9fafb' : '#0f172a',
+        secondaryText: isDark ? '#9ca3af' : '#6b7280',
+        inputBg: isDark ? '#4b5563' : '#f3f4f6',
+        inputIcon: isDark ? '#d1d5db' : '#9ca3af',
+        cardBorder: isDark ? '#4b5563' : '#eef2f7',
+        divider: isDark ? '#4b5563' : '#e6e6e6',
+        
+        // Error/Validation
+        danger: isDark ? '#f87171' : '#ef4444',
+        success: isDark ? '#4ade80' : '#10b981',
+        errorBg: isDark ? '#450a0a' : '#fff1f2',
+        errorBorder: isDark ? '#7f1d1d' : '#fee2e2',
+        errorText: isDark ? '#fecaca' : '#991b1b',
+
+        // Icon Circle
+        iconCircleBg: isDark ? 'rgba(79, 70, 229, 0.2)' : '#eef2ff',
+        iconCircleColor: isDark ? '#818cf8' : '#4f46e5',
+        googleButtonBg: isDark ? '#4b5563' : '#ffffff',
+        googleButtonBorder: isDark ? '#6b7280' : '#e5e7eb',
+    };
 
     // --- Validation Logic ---
     useEffect(() => {
@@ -50,7 +76,6 @@ const Register = () => {
         setIsSubmitting(true);
         setError('');
         try {
-            // googleLogin in AuthProvider now handles MongoDB save
             await googleLogin();
             toast.success('Registration successful with Google!');
             navigate('/');
@@ -59,7 +84,7 @@ const Register = () => {
             
             // Handle specific error codes
             if (err.message?.includes('popup')) {
-                errorMessage = err.message; // Use the detailed message from AuthProvider
+                errorMessage = err.message; 
             } else if (err.code === 'auth/network-request-failed') {
                 errorMessage = 'Network error. Please check your connection and try again.';
             } else if (err.message) {
@@ -100,7 +125,7 @@ const Register = () => {
             // 2. Update User Profile with Name and PhotoURL
             await updateUserProfile(fullName, photoURL || null);
 
-            // 3. 🚨 NEW STEP: Save user data to MongoDB 🚨
+            // 3. NEW STEP: Save user data to MongoDB 
             const userData = {
                 email: user.email,
                 fullName: fullName,
@@ -109,10 +134,9 @@ const Register = () => {
             };
             
             try {
-                await saveUserToDB(userData); // This calls the server API to save to MongoDB
+                await saveUserToDB(userData); 
             } catch (dbError) {
                 console.error('MongoDB save error (non-critical):', dbError);
-                // Don't block the user - they're already authenticated in Firebase
                 toast.success('Account created! (Some data sync delayed)');
             }
             
@@ -145,7 +169,7 @@ const Register = () => {
     };
 
     const ValidationItem = ({ isValid, children }) => (
-        <li style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: isValid ? '#10b981' : '#ef4444' }}>
+        <li style={{ display: 'flex', alignItems: 'center', fontSize: '12px', color: isValid ? colors.success : colors.danger }}>
             <span style={{ marginRight: '4px' }}>
                 {isValid ? '✓' : '•'}
             </span>
@@ -155,22 +179,30 @@ const Register = () => {
 
     // --- JSX Render ---
     return (
-        <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f9fafb', padding: '24px' }}>
-            <div style={{ width: '100%', maxWidth: '420px', background: '#ffffff', borderRadius: '12px', boxShadow: '0 8px 30px rgba(17,24,39,0.06)', border: '1px solid #eef2f7' }}>
+        <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: colors.pageBg, padding: '24px' }}>
+            <div style={{ width: '100%', maxWidth: '420px', background: colors.surfaceBg, borderRadius: '12px', boxShadow: isDark ? '0 8px 30px rgba(0,0,0,0.4)' : '0 8px 30px rgba(17,24,39,0.06)', border: `1px solid ${colors.cardBorder}` }}>
                 <div style={{ padding: '28px' }}>
 
                     {/* Header */}
                     <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-                        <div style={{ margin: '0 auto', width: '56px', height: '56px', background: '#eef2ff', color: '#4f46e5', borderRadius: '9999px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
+                        <div style={{ margin: '0 auto', width: '56px', height: '56px', background: colors.iconCircleBg, color: colors.iconCircleColor, borderRadius: '9999px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '12px' }}>
                             <User style={{ width: 20, height: 20 }} />
                         </div>
-                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: '#0f172a' }}>Create Account</h2>
-                        <p style={{ fontSize: '13px', color: '#6b7280', marginTop: '6px' }}>Start building better habits today</p>
+                        <h2 style={{ fontSize: '18px', fontWeight: 600, color: colors.primaryText }}>Create Account</h2>
+                        <p style={{ fontSize: '13px', color: colors.secondaryText, marginTop: '6px' }}>Start building better habits today</p>
                     </div>
 
                     {/* Error Display */}
                     {error && (
-                        <div role="alert" style={{ marginBottom: '12px', fontSize: '13px', color: '#991b1b', background: '#fff1f2', border: '1px solid #fee2e2', borderRadius: '8px', padding: '10px' }}>
+                        <div role="alert" style={{ 
+                            marginBottom: '12px', 
+                            fontSize: '13px', 
+                            color: colors.errorText, 
+                            background: colors.errorBg, 
+                            border: `1px solid ${colors.errorBorder}`, 
+                            borderRadius: '8px', 
+                            padding: '10px' 
+                        }}>
                             {error}
                         </div>
                     )}
@@ -180,14 +212,14 @@ const Register = () => {
 
                         {/* Full Name */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Name</label>
-                            <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
-                                <div style={{ padding: '10px', color: '#9ca3af' }}><User style={{ width: 18, height: 18 }} /></div>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: colors.primaryText, marginBottom: '6px' }}>Name</label>
+                            <div style={{ display: 'flex', alignItems: 'center', background: colors.inputBg, borderRadius: '8px', overflow: 'hidden' }}>
+                                <div style={{ padding: '10px', color: colors.inputIcon }}><User style={{ width: 18, height: 18 }} /></div>
                                 <input
                                     type="text"
                                     id="fullName"
                                     placeholder="John Doe"
-                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px' }}
+                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px', color: colors.primaryText }}
                                     value={formData.fullName}
                                     onChange={handleChange}
                                     required
@@ -197,14 +229,14 @@ const Register = () => {
 
                         {/* Email */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Email</label>
-                            <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
-                                <div style={{ padding: '10px', color: '#9ca3af' }}><Mail style={{ width: 18, height: 18 }} /></div>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: colors.primaryText, marginBottom: '6px' }}>Email</label>
+                            <div style={{ display: 'flex', alignItems: 'center', background: colors.inputBg, borderRadius: '8px', overflow: 'hidden' }}>
+                                <div style={{ padding: '10px', color: colors.inputIcon }}><Mail style={{ width: 18, height: 18 }} /></div>
                                 <input
                                     type="email"
                                     id="email"
                                     placeholder="you@example.com"
-                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px' }}
+                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px', color: colors.primaryText }}
                                     value={formData.email}
                                     onChange={handleChange}
                                     required
@@ -214,14 +246,14 @@ const Register = () => {
 
                         {/* Photo URL */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Photo URL</label>
-                            <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
-                                <div style={{ padding: '10px', color: '#9ca3af' }}><Link style={{ width: 18, height: 18 }} /></div>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: colors.primaryText, marginBottom: '6px' }}>Photo URL</label>
+                            <div style={{ display: 'flex', alignItems: 'center', background: colors.inputBg, borderRadius: '8px', overflow: 'hidden' }}>
+                                <div style={{ padding: '10px', color: colors.inputIcon }}><LinkIcon style={{ width: 18, height: 18 }} /></div>
                                 <input
                                     type="url"
                                     id="photoURL"
                                     placeholder="https://example.com/photo.jpg"
-                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px' }}
+                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px', color: colors.primaryText }}
                                     value={formData.photoURL}
                                     onChange={handleChange}
                                 />
@@ -230,14 +262,14 @@ const Register = () => {
 
                         {/* Password */}
                         <div>
-                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: '#111827', marginBottom: '6px' }}>Password</label>
-                            <div style={{ display: 'flex', alignItems: 'center', background: '#f3f4f6', borderRadius: '8px', overflow: 'hidden' }}>
-                                <div style={{ padding: '10px', color: '#9ca3af' }}><Lock style={{ width: 18, height: 18 }} /></div>
+                            <label style={{ display: 'block', fontSize: '13px', fontWeight: 500, color: colors.primaryText, marginBottom: '6px' }}>Password</label>
+                            <div style={{ display: 'flex', alignItems: 'center', background: colors.inputBg, borderRadius: '8px', overflow: 'hidden' }}>
+                                <div style={{ padding: '10px', color: colors.inputIcon }}><Lock style={{ width: 18, height: 18 }} /></div>
                                 <input
                                     type="password"
                                     id="password"
                                     placeholder="********"
-                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px' }}
+                                    style={{ flex: 1, border: 'none', background: 'transparent', padding: '10px 12px', fontSize: '14px', color: colors.primaryText }}
                                     value={formData.password}
                                     onChange={handleChange}
                                     required
@@ -261,7 +293,20 @@ const Register = () => {
                         {/* Submit */}
                         <button
                             type="submit"
-                            style={{ width: '100%', marginTop: '6px', borderRadius: '10px', padding: '10px 12px', fontSize: '14px', fontWeight: 600, color: '#fff', background: 'linear-gradient(90deg,#6366f1,#a855f7)', border: 'none', cursor: isSubmitting || !isFormValid ? 'default' : 'pointer', opacity: isSubmitting || !isFormValid ? 0.7 : 1 }}
+                            style={{ 
+                                width: '100%', 
+                                marginTop: '6px', 
+                                borderRadius: '10px', 
+                                padding: '10px 12px', 
+                                fontSize: '14px', 
+                                fontWeight: 600, 
+                                color: '#fff', 
+                                background: 'linear-gradient(90deg,#6366f1,#a855f7)', 
+                                border: 'none', 
+                                cursor: isSubmitting || !isFormValid ? 'default' : 'pointer', 
+                                opacity: isSubmitting || !isFormValid ? 0.7 : 1,
+                                transition: 'opacity 0.2s'
+                            }}
                             disabled={!isFormValid || isSubmitting}
                         >
                             {isSubmitting ? 'Creating Account...' : 'Create Account'}
@@ -269,9 +314,9 @@ const Register = () => {
 
                         {/* Divider */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
-                            <div style={{ flex: 1, height: '1px', background: '#e6e6e6' }}></div>
-                            <div style={{ fontSize: '12px', color: '#9ca3af' }}>Or continue with</div>
-                            <div style={{ flex: 1, height: '1px', background: '#e6e6e6' }}></div>
+                            <div style={{ flex: 1, height: '1px', background: colors.divider }}></div>
+                            <div style={{ fontSize: '12px', color: colors.secondaryText }}>Or continue with</div>
+                            <div style={{ flex: 1, height: '1px', background: colors.divider }}></div>
                         </div>
 
                         {/* Google Button */}
@@ -279,7 +324,20 @@ const Register = () => {
                             type="button"
                             onClick={handleGoogleLogin}
                             disabled={isSubmitting}
-                            style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '8px 10px', background: '#ffffff', fontSize: '14px', cursor: isSubmitting ? 'default' : 'pointer' }}
+                            style={{ 
+                                width: '100%', 
+                                display: 'flex', 
+                                alignItems: 'center', 
+                                justifyContent: 'center', 
+                                gap: '8px', 
+                                border: `1px solid ${colors.googleButtonBorder}`, 
+                                borderRadius: '8px', 
+                                padding: '8px 10px', 
+                                background: colors.googleButtonBg, 
+                                fontSize: '14px', 
+                                cursor: isSubmitting ? 'default' : 'pointer',
+                                color: colors.primaryText
+                            }}
                         >
                             <img src="https://i.pinimg.com/736x/2f/80/9e/2f809e3268f29a6f81eca9b0864af1d1.jpg" alt="Google" style={{ width: 18, height: 18 }} />
                             <span>Sign up with Google</span>
@@ -288,7 +346,7 @@ const Register = () => {
                     </form>
 
                     {/* Sign in link */}
-                    <p style={{ textAlign: 'center', fontSize: '13px', color: '#374151', marginTop: '18px' }}>Already have an account? 
+                    <p style={{ textAlign: 'center', fontSize: '13px', color: colors.secondaryText, marginTop: '18px' }}>Already have an account? 
                         <button type="button" onClick={onLoginRedirect} style={{ color: '#7c3aed', fontWeight: 600, marginLeft: '6px', background: 'none', border: 'none', cursor: 'pointer' }}>
                             Sign in
                         </button>

@@ -1,8 +1,5 @@
 // src/api/habitApi.js
-
 import axios from 'axios';
-
-// 🚩 IMPORTANT: Base URL must match your server's running address
 const API_URL = 'http://localhost:3000/api/v1/habits';
 
 /**
@@ -13,7 +10,6 @@ const API_URL = 'http://localhost:3000/api/v1/habits';
 export const fetchFeaturedHabits = async () => {
     try {
         const response = await axios.get(`${API_URL}/featured`);
-        // The server returns { success: true, data: [...] }
         return response.data.data; 
     } catch (error) {
         console.error('Error fetching featured habits:', error);
@@ -67,7 +63,7 @@ export const fetchHabitDetail = async (habitId, token) => {
                 Authorization: `Bearer ${token}` 
             }
         });
-        // Returns the single habit object
+        // Returns single habit object
         return response.data.data; 
     } catch (error) {
         console.error(`Error fetching habit ${habitId}:`, error);
@@ -139,8 +135,6 @@ export const updateHabit = async (habitId, habitData, token) => {
     }
 };
 
-// src/api/habitApi.js (NEW AND CORRECTED)
-
 /**
  * @desc Marks a habit complete for today.
  * @route PATCH /api/v1/habits/:id/complete
@@ -148,7 +142,6 @@ export const updateHabit = async (habitId, habitData, token) => {
  */
 export const completeHabit = async (habitId, token) => {
     try {
-        // 🛑 FIX: Use an empty object {} instead of null for the body
         const response = await axios.patch(`${API_URL}/${habitId}/complete`, {}, { 
             headers: {
                 Authorization: `Bearer ${token}`,

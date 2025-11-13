@@ -1,8 +1,8 @@
 // src/components/Testimonials.jsx
 
 import React from 'react';
-// Import a star icon for rating (assuming you have react-icons installed)
 import { FaQuoteLeft, FaStar } from 'react-icons/fa'; 
+import useTheme from '../hooks/useTheme.js'; 
 
 const testimonialsData = [
     {
@@ -26,10 +26,16 @@ const testimonialsData = [
 ];
 
 const Testimonials = () => {
-    // Styling constants for consistency with your Footer's inline style approach
+    const { theme } = useTheme();
+    const isDark = theme === 'dark';
+
+    const primaryColor = '#8b5cf6'; 
+    const activeStarColor = '#fcd34d'; 
+    const inactiveStarColor = isDark ? '#4b5563' : '#d1d5db'; 
+
     const containerStyle = {
         paddingBottom: '6rem',
-        backgroundColor: '#ffffff', // White background
+        backgroundColor: isDark ? '#111827' : '#ffffff', 
     };
 
     const headerStyle = {
@@ -38,16 +44,16 @@ const Testimonials = () => {
     };
 
     const mainTitleStyle = {
-        fontSize: '2.25rem', // text-4xl
+        fontSize: '2.25rem',
         fontWeight: '700',
-        color: '#1f2937', // gray-900
+        color: isDark ? '#e5e7eb' : '#1f2937', 
         margin: 0,
         marginBottom: '0.5rem',
     };
 
     const subTextStyle = {
         fontSize: '1rem',
-        color: '#6b7280', // gray-500
+        color: isDark ? '#9ca3af' : '#6b7280', 
         margin: 0,
     };
 
@@ -62,19 +68,18 @@ const Testimonials = () => {
     };
 
     const cardStyle = {
-        backgroundColor: '#f9fafb', // gray-50
+        backgroundColor: isDark ? '#1f2937' : '#f9fafb', 
         padding: '2rem',
-        borderRadius: '0.75rem', // rounded-xl
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
+        borderRadius: '0.75rem', 
+        boxShadow: isDark 
+            ? '0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.2)'
+            : '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1)',
         display: 'flex',
         flexDirection: 'column',
     };
     
-    // Function to render star icons based on rating
     const renderStars = (rating) => {
         const stars = [];
-        const activeStarColor = '#fcd34d'; // amber-400
-        const inactiveStarColor = '#d1d5db'; // gray-300
 
         for (let i = 1; i <= 5; i++) {
             stars.push(
@@ -99,12 +104,12 @@ const Testimonials = () => {
                     <div key={index} style={cardStyle}>
                         
                         {/* Quote Icon */}
-                        <FaQuoteLeft style={{ color: '#8b5cf6', fontSize: '1.5rem', marginBottom: '1rem' }} />
+                        <FaQuoteLeft style={{ color: primaryColor, fontSize: '1.5rem', marginBottom: '1rem' }} />
 
                         {/* Quote Text */}
                         <p style={{ 
                             fontSize: '1rem', 
-                            color: '#4b5563', 
+                            color: isDark ? '#d1d5db' : '#4b5563', 
                             flexGrow: 1, 
                             marginBottom: '1.5rem',
                             fontStyle: 'italic',
@@ -113,7 +118,7 @@ const Testimonials = () => {
                         </p>
                         
                         {/* Divider */}
-                        <div style={{ borderTop: '1px solid #e5eeeb', margin: '0.5rem 0 1rem 0' }}></div>
+                        <div style={{ borderTop: `1px solid ${isDark ? '#374151' : '#e5eeeb'}`, margin: '0.5rem 0 1rem 0' }}></div> {/* Dynamic divider color */}
                         
                         {/* Footer: Rating and User Info */}
                         <div>
@@ -121,14 +126,14 @@ const Testimonials = () => {
                             <p style={{ 
                                 fontSize: '1rem', 
                                 fontWeight: '600', 
-                                color: '#1f2937', 
+                                color: isDark ? '#e5e7eb' : '#1f2937', 
                                 margin: '0.5rem 0 0 0' 
                             }}>
                                 {testimonial.name}
                             </p>
                             <p style={{ 
                                 fontSize: '0.875rem', 
-                                color: '#6b7280', 
+                                color: isDark ? '#9ca3af' : '#6b7280', 
                                 margin: 0 
                             }}>
                                 {testimonial.title}

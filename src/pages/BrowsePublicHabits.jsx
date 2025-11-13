@@ -4,21 +4,42 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
+import useTheme from '../hooks/useTheme'; 
 
 const API_URL = 'http://localhost:3000/api/v1/habits';
 
 const BrowsePublicHabits = () => {
+    const { theme } = useTheme(); 
+    const isDark = theme === 'dark';
+
     const [habits, setHabits] = useState([]);
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const categories = ['All', 'Morning', 'Work', 'Fitness', 'Evening', 'Study'];
 
+    const primaryColor = '#6366f1'; 
+    const bgColor = isDark ? '#111827' : '#fff';
+    const mainTitleColor = isDark ? '#f9fafb' : '#111827';
+    const subTextColor = isDark ? '#9ca3af' : '#6b7280';
+    const cardBg = isDark ? '#1f2937' : '#fff';
+    const cardBorder = isDark ? '#374151' : '#eef2f7';
+    const cardTitleColor = isDark ? '#f9fafb' : '#111827';
+    const cardCreatorColor = isDark ? '#e5e7eb' : '#111827';
+    const dividerColor = isDark ? '#374151' : '#eef2f7';
+    const inputBg = isDark ? '#1f2937' : '#fff';
+    const inputBorder = isDark ? '#4b5563' : '#d1d5db';
+    const inputTextColor = isDark ? '#e5e7eb' : '#111827';
+    const emptyStateBg = isDark ? '#1f2937' : '#f9fafb';
+    const emptyStateBorder = isDark ? '#374151' : '#e5e7eb';
+    const loaderBorderColor = isDark ? '#374151' : '#e5e7eb';
+
+
     useEffect(() => {
         const loadPublicHabits = async () => {
             setLoading(true);
             try {
-                // Fetch all public habits (no auth required)
+                // Fetch all public habits 
                 const response = await axios.get(`${API_URL}/public`);
                 setHabits(Array.isArray(response.data.data) ? response.data.data : []);
             } catch (err) {
@@ -43,20 +64,20 @@ const BrowsePublicHabits = () => {
     if (loading) {
         return (
             <div style={{ padding: '60px 20px', textAlign: 'center' }}>
-                <div style={{ display: 'inline-block', width: '40px', height: '40px', border: '4px solid #e5e7eb', borderTop: '4px solid #6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
-                <p style={{ marginTop: '16px', fontSize: '16px', color: '#6b7280' }}>Loading habits...</p>
+                <div style={{ display: 'inline-block', width: '40px', height: '40px', border: `4px solid ${loaderBorderColor}`, borderTop: `4px solid ${primaryColor}`, borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <p style={{ marginTop: '16px', fontSize: '16px', color: subTextColor }}>Loading habits...</p>
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
             </div>
         );
     }
 
     return (
-        <div style={{ padding: '32px 20px', background: '#fff', minHeight: '80vh' }}>
+        <div style={{ padding: '32px 20px', background: bgColor, minHeight: '80vh' }}> 
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 {/* Header */}
                 <div style={{ marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', margin: 0 }}>Browse Public Habits</h1>
-                    <p style={{ fontSize: '14px', color: '#6b7280', marginTop: '8px' }}>Discover habits shared by the community</p>
+                    <h1 style={{ fontSize: '28px', fontWeight: 700, color: mainTitleColor, margin: 0 }}>Browse Public Habits</h1> 
+                    <p style={{ fontSize: '14px', color: subTextColor, marginTop: '8px' }}>Discover habits shared by the community</p> 
                 </div>
 
                 {/* Search Bar */}
@@ -70,21 +91,21 @@ const BrowsePublicHabits = () => {
                             width: '100%',
                             padding: '12px 16px',
                             fontSize: '14px',
-                            border: '1px solid #d1d5db',
+                            border: `1px solid ${inputBorder}`, 
                             borderRadius: '8px',
-                            background: '#fff',
-                            color: '#111827',
+                            background: inputBg, 
+                            color: inputTextColor, 
                             outline: 'none',
                             transition: 'border-color 0.2s'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#6366f1'}
-                        onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                        onFocus={(e) => e.target.style.borderColor = primaryColor}
+                        onBlur={(e) => e.target.style.borderColor = inputBorder}
                     />
                 </div>
 
                 {/* Category Filter */}
                 <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, color: '#374151' }}>Filter:</span>
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: mainTitleColor }}>Filter:</span> 
                     {categories.map(cat => (
                         <button 
                             key={cat}
@@ -92,9 +113,9 @@ const BrowsePublicHabits = () => {
                             style={{ 
                                 padding: '8px 16px', 
                                 borderRadius: '24px', 
-                                border: selectedCategory === cat ? 'none' : '1px solid #d1d5db',
-                                background: selectedCategory === cat ? '#6366f1' : '#fff',
-                                color: selectedCategory === cat ? '#fff' : '#374151',
+                                border: selectedCategory === cat ? 'none' : `1px solid ${inputBorder}`,
+                                background: selectedCategory === cat ? primaryColor : cardBg, 
+                                color: selectedCategory === cat ? '#fff' : inputTextColor, 
                                 fontSize: '13px',
                                 fontWeight: 600,
                                 cursor: 'pointer',
@@ -102,12 +123,12 @@ const BrowsePublicHabits = () => {
                             }}
                             onMouseEnter={(e) => {
                                 if (selectedCategory !== cat) {
-                                    e.target.style.borderColor = '#9ca3af';
+                                    e.target.style.borderColor = isDark ? '#9ca3af' : '#9ca3af';
                                 }
                             }}
                             onMouseLeave={(e) => {
                                 if (selectedCategory !== cat) {
-                                    e.target.style.borderColor = '#d1d5db';
+                                    e.target.style.borderColor = inputBorder;
                                 }
                             }}
                         >
@@ -119,15 +140,15 @@ const BrowsePublicHabits = () => {
                 {/* Habits Grid or Empty State */}
                 {filteredHabits.length === 0 ? (
                     <div style={{ 
-                        border: '1px solid #e5e7eb', 
+                        border: `1px solid ${emptyStateBorder}`, 
                         borderRadius: '12px', 
                         padding: '60px 20px', 
                         textAlign: 'center', 
-                        background: '#f9fafb' 
+                        background: emptyStateBg 
                     }}>
                         <div style={{ fontSize: '64px', marginBottom: '16px' }}>🔍</div>
-                        <p style={{ fontSize: '16px', color: '#111827', fontWeight: 600, margin: 0 }}>No habits found</p>
-                        <p style={{ fontSize: '14px', color: '#6366f1', marginTop: '8px' }}>Be the first to share a public habit!</p>
+                        <p style={{ fontSize: '16px', color: mainTitleColor, fontWeight: 600, margin: 0 }}>No habits found</p> 
+                        <p style={{ fontSize: '14px', color: primaryColor, marginTop: '8px' }}>Be the first to share a public habit!</p>
                     </div>
                 ) : (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
@@ -135,32 +156,32 @@ const BrowsePublicHabits = () => {
                             <div 
                                 key={habit._id} 
                                 style={{ 
-                                    background: '#fff', 
+                                    background: cardBg, 
                                     borderRadius: '12px', 
-                                    border: '1px solid #eef2f7', 
+                                    border: `1px solid ${cardBorder}`, 
                                     overflow: 'hidden', 
-                                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)', 
+                                    boxShadow: isDark ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.08)',
                                     transition: 'all 0.3s ease' 
                                 }}
                                 onMouseEnter={(e) => { 
-                                    e.currentTarget.style.boxShadow = '0 8px 20px rgba(0,0,0,0.12)'; 
+                                    e.currentTarget.style.boxShadow = isDark ? '0 8px 20px rgba(0,0,0,0.4)' : '0 8px 20px rgba(0,0,0,0.12)'; 
                                     e.currentTarget.style.transform = 'translateY(-2px)'; 
                                 }}
                                 onMouseLeave={(e) => { 
-                                    e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.08)'; 
+                                    e.currentTarget.style.boxShadow = isDark ? '0 4px 12px rgba(0,0,0,0.3)' : '0 4px 12px rgba(0,0,0,0.08)'; 
                                     e.currentTarget.style.transform = 'translateY(0)'; 
                                 }}
                             >
                                 {/* Image */}
                                 <div style={{ 
                                     height: '160px', 
-                                    background: habit.image ? `url(${habit.image})` : '#f3f4f6', 
+                                    background: habit.image ? `url(${habit.image})` : (isDark ? '#374151' : '#f3f4f6'), 
                                     backgroundSize: 'cover', 
                                     backgroundPosition: 'center', 
                                     display: 'flex', 
                                     alignItems: 'center', 
                                     justifyContent: 'center', 
-                                    color: '#6366f1', 
+                                    color: primaryColor, 
                                     fontSize: '32px' 
                                 }}>
                                     {!habit.image && '✨'}
@@ -168,15 +189,15 @@ const BrowsePublicHabits = () => {
 
                                 {/* Content */}
                                 <div style={{ padding: '20px' }}>
-                                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: '#111827', margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{habit.title}</h3>
-                                    <p style={{ fontSize: '13px', color: '#6b7280', margin: '0 0 12px 0', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{habit.description}</p>
+                                    <h3 style={{ fontSize: '16px', fontWeight: 700, color: cardTitleColor, margin: '0 0 8px 0', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{habit.title}</h3> 
+                                    <p style={{ fontSize: '13px', color: subTextColor, margin: '0 0 12px 0', overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>{habit.description}</p> 
                                     
                                     {/* Category Badge */}
-                                    <span style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(99,102,241,0.1)', color: '#6366f1', fontSize: '12px', fontWeight: 600, borderRadius: '4px', marginBottom: '12px' }}>{habit.category}</span>
+                                    <span style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(99,102,241,0.1)', color: primaryColor, fontSize: '12px', fontWeight: 600, borderRadius: '4px', marginBottom: '12px' }}>{habit.category}</span>
                                     
-                                    <div style={{ borderTop: '1px solid #eef2f7', paddingTop: '12px' }}>
-                                        <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 12px 0' }}>Creator: <span style={{ fontWeight: 600, color: '#111827' }}>{habit.userName || 'Anonymous'}</span></p>
-                                        <Link to={`/habit-detail/${habit._id}`} style={{ display: 'block', textAlign: 'center', padding: '10px', background: '#6366f1', color: '#fff', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 600, transition: 'background 0.2s' }} onMouseEnter={(e) => e.target.style.background = '#4f46e5'} onMouseLeave={(e) => e.target.style.background = '#6366f1'}>View Details</Link>
+                                    <div style={{ borderTop: `1px solid ${dividerColor}`, paddingTop: '12px' }}> 
+                                        <p style={{ fontSize: '12px', color: subTextColor, margin: '0 0 12px 0' }}>Creator: <span style={{ fontWeight: 600, color: cardCreatorColor }}>{habit.userName || 'Anonymous'}</span></p> 
+                                        <Link to={`/habit-detail/${habit._id}`} style={{ display: 'block', textAlign: 'center', padding: '10px', background: primaryColor, color: '#fff', borderRadius: '6px', textDecoration: 'none', fontSize: '13px', fontWeight: 600, transition: 'background 0.2s' }} onMouseEnter={(e) => e.target.style.background = '#4f46e5'} onMouseLeave={(e) => e.target.style.background = primaryColor}>View Details</Link>
                                     </div>
                                 </div>
                             </div>

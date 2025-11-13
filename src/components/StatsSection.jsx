@@ -1,8 +1,8 @@
-// src/components/home/StatsSection.jsx
-
+// src/components/StatsSection.jsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaUsers, FaRegCircleCheck, FaBolt } from 'react-icons/fa6'; 
+import useTheme from '../hooks/useTheme'; 
 
 const statsData = [
     {
@@ -23,21 +23,25 @@ const statsData = [
 ];
 
 const StatsSection = () => {
-    // Styling constants for the stats section
+    const { theme } = useTheme(); 
+    const isDark = theme === 'dark';
+
     const sectionContainerStyle = {
         padding: '0rem 1rem',
         margin: '6rem auto',
         maxWidth: '1200px',
+        backgroundColor: isDark ? '#111827' : 'transparent',
     };
 
     const statsBoxStyle = {
         padding: '4rem 2rem',
         borderRadius: '1rem',
         textAlign: 'center',
-        // Purple gradient background
         backgroundImage: 'linear-gradient(135deg, #6d28d9 0%, #8b5cf6 100%)', 
         color: '#ffffff',
-        boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
+        boxShadow: isDark 
+            ? '0 10px 25px -3px rgba(139, 92, 246, 0.4), 0 4px 6px -4px rgba(0, 0, 0, 0.4)'
+            : '0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -4px rgba(0, 0, 0, 0.1)',
     };
 
     const headerTitleStyle = {
@@ -65,10 +69,10 @@ const StatsSection = () => {
 
     const statItemStyle = {
         flex: '1 1 200px',
-        display: 'flex',          // Enable flexbox
-        flexDirection: 'column',  // Stack items vertically
-        alignItems: 'center',     // Center items horizontally (the fix!)
-        textAlign: 'center',      // Still useful for text inside <p> elements
+        display: 'flex', 
+        flexDirection: 'column', 
+        alignItems: 'center', 
+        textAlign: 'center', 
     };
 
     const iconStyle = {
@@ -78,23 +82,20 @@ const StatsSection = () => {
         color: '#ffffff',
     };
 
-    // FIXED: Ensure all margins are set to zero to prevent default browser styling from offsetting the center.
     const valueStyle = {
         fontSize: '2.5rem',
         fontWeight: '800',
-        margin: 0, // Explicitly set margin to 0
+        margin: 0, 
         lineHeight: '1.1',
     };
 
-    // FIXED: Ensure all margins are set to zero and use padding/line-height for spacing if necessary.
     const labelStyle = {
         fontSize: '1rem',
         fontWeight: '400',
-        marginTop: '0.75rem', // Controlled spacing below value
-        margin: 0, // Explicitly set margin to 0, relying on marginTop for spacing
+        marginTop: '0.75rem', 
+        margin: 0, 
     };
 
-    // Button style
     const buttonStyle = {
         display: 'inline-block',
         padding: '0.75rem 2.5rem',
