@@ -7,6 +7,7 @@ import { fetchMyHabits, deleteHabit, completeHabit } from '../api/habitApi';
 import { calculateStreak } from '../utils/streakUtils'; // You'll need to create this utility
 import { Link } from 'react-router-dom';
 import UpdateHabitModal from '../components/UpdateHabitModal'; // We'll create this next
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const MyHabits = () => {
     const { user, loading: authLoading } = useAuth();
@@ -19,7 +20,6 @@ const MyHabits = () => {
     // --- Data Fetching ---
     const loadHabits = async () => {
         if (!user) return; // Wait for user object to be available
-
         setLoading(true);
     try {
             if (typeof user.getIdToken !== 'function') {

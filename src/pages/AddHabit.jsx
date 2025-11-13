@@ -167,7 +167,7 @@ const AddHabit = () => {
 
                 <form onSubmit={handleSubmit}>
                     {/* Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
                         {/* Title */}
                         <div>
                             <label style={{ fontSize: 13, fontWeight: 600, color: '#111827', display: 'block', marginBottom: 8 }}>Habit Title *</label>
@@ -195,7 +195,7 @@ const AddHabit = () => {
                         <div>
                             <label style={{ fontSize: 13, fontWeight: 600, color: '#111827', display: 'block', marginBottom: 8 }}>Image URL (Optional)</label>
                             <input type="url" name="image" value={formData.image} onChange={handleChange} placeholder="https://example.com/image.jpg"
-                                style={{ width: '100%', padding: '10px 12px', borderRadius: 8, border: '1px solid #e9eef6', background: '#f3f4f6', marginBottom: 8 }} />
+                                style={{ width: '90%', padding: '10px 12px', borderRadius: 8, border: '1px solid #e9eef6', background: '#f3f4f6', marginBottom: 8 }} />
 
                             <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
                                 <input type="file" accept="image/*" onChange={handleFileChange} />
@@ -208,7 +208,7 @@ const AddHabit = () => {
                     <div style={{ marginTop: 16 }}>
                         <label style={{ fontSize: 13, fontWeight: 600, color: '#111827', display: 'block', marginBottom: 8 }}>Description</label>
                         <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Describe your habit and why it's important to you..."
-                            style={{ width: '100%', minHeight: 120, padding: '12px', borderRadius: 8, border: '1px solid #e9eef6', background: '#f3f4f6' }} />
+                            style={{ width: '95%', minHeight: 120, padding: '12px', borderRadius: 8, border: '1px solid #e9eef6', background: '#f3f4f6' }} />
                     </div>
 
                     {/* User info and public toggle */}

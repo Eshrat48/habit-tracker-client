@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import LoadingSpinner from '../components/LoadingSpinner';
 
 const API_URL = 'http://localhost:3000/api/v1/habits';
 

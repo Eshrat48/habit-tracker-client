@@ -1,24 +1,71 @@
-// src/pages/ErrorPage.jsx
+// src/pages/ErrorPage.jsx (CSS combined in line)
 
 import React from 'react';
-import { useRouteError } from 'react-router-dom';
+// Assuming error404Img is correctly imported or you use a placeholder path
+import error404Img from '../assets/error-404.png'; 
 
-const ErrorPage = () => {
-  const error = useRouteError(); // Get error details from React Router
-
-  return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-center p-8">
-      <h1 className="text-7xl font-extrabold text-red-600 mb-4">404</h1>
-      <h2 className="text-3xl font-semibold text-gray-800 mb-6">Oops! Page Not Found</h2>
-      <p className="text-lg text-gray-600 mb-8">
-        The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
-      </p>
-      <p className="text-sm text-gray-500 italic">
-        {error.statusText || error.message}
-      </p>
+const ErrorPage = () => (
+    <div 
+        style={{ 
+            width: '100%', 
+            minHeight: '70vh', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            justifyContent: 'center' 
+        }}
+    >
+        <img 
+            src={error404Img} 
+            alt="404" 
+            style={{ 
+                width: '340px', 
+                maxWidth: '80vw', 
+                marginTop: '50px', 
+                marginBottom: '30px' 
+            }}
+        />
+        <h2 
+            style={{ 
+                fontSize: '48px', 
+                fontWeight: 600, 
+                color: '#001931', 
+                marginBottom: '8px', 
+                textAlign: 'center' 
+            }}
+        >
+            Oops, page not found!
+        </h2>
+        <p 
+            style={{ 
+                color: '#627382', 
+                fontSize: '20px', 
+                fontWeight: 500, 
+                marginBottom: '22px', 
+                textAlign: 'center' 
+            }}
+        >
+            The page you are looking for is not available.
+        </p>
+        <button 
+            style={{ 
+                backgroundImage: 'linear-gradient(to right, #632EE3, #9F62F2)', 
+                color: '#ffffff', 
+                fontSize: '16px', 
+                fontWeight: 500, 
+                border: 'none', 
+                outline: 'none', 
+                borderRadius: '8px', 
+                padding: '10px 34px', 
+                cursor: 'pointer', 
+                marginBottom: '50px'
+                // Hover and transition effects are lost with inline styles
+            }} 
+            onClick={() => window.location.href = '/'}
+        >
+            Go Back!
+        </button>
     </div>
-  );
-};
+);
 
-// CRITICAL FIX: The component must be exported as default
 export default ErrorPage;
