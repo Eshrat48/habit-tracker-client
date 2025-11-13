@@ -60,64 +60,64 @@ const UpdateHabitModal = ({ habit, onClose, onUpdateSuccess }) => {
 
     return (
         // Modal Backdrop
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div style={{ position: 'fixed', inset: '0', background: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: '50' }} onClick={onClose}>
             {/* Modal Content */}
-            <div className="bg-white rounded-lg shadow-2xl p-6 w-full max-w-lg mx-4" onClick={(e) => e.stopPropagation()}>
-                <div className="flex justify-between items-center border-b pb-3 mb-4">
-                    <h2 className="text-2xl font-bold">Update Habit: {habit.title}</h2>
-                    <button className="text-gray-500 hover:text-gray-800" onClick={onClose}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" /></svg>
+            <div style={{ background: '#fff', borderRadius: '12px', boxShadow: '0 20px 25px rgba(0,0,0,0.15)', padding: '24px', width: '100%', maxWidth: '500px', margin: '16px' }} onClick={(e) => e.stopPropagation()}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #e5e7eb', paddingBottom: '12px', marginBottom: '16px' }}>
+                    <h2 style={{ fontSize: '20px', fontWeight: 700, margin: 0 }}>Update Habit: {habit.title}</h2>
+                    <button onClick={onClose} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '20px', color: '#6b7280' }}>
+                        ✕
                     </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                     
                     {/* Title */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Title</span></label>
-                        <input type="text" name="title" value={formData.title} onChange={handleChange} required className="input input-bordered w-full" maxLength="100" />
+                    <div>
+                        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>Title</label>
+                        <input type="text" name="title" value={formData.title} onChange={handleChange} required style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e9eef6', background: '#f3f4f6' }} maxLength="100" />
                     </div>
 
                     {/* Category */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Category</span></label>
-                        <select name="category" value={formData.category} onChange={handleChange} required className="select select-bordered w-full">
+                    <div>
+                        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>Category</label>
+                        <select name="category" value={formData.category} onChange={handleChange} required style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e9eef6', background: '#f3f4f6' }}>
                             {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                         </select>
                     </div>
 
                     {/* Description */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Description</span></label>
-                        <textarea name="description" value={formData.description} onChange={handleChange} required className="textarea textarea-bordered h-24 w-full" maxLength="500"></textarea>
+                    <div>
+                        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>Description</label>
+                        <textarea name="description" value={formData.description} onChange={handleChange} required style={{ width: '100%', minHeight: '96px', padding: '12px', borderRadius: '8px', border: '1px solid #e9eef6', background: '#f3f4f6' }} maxLength="500"></textarea>
                     </div>
 
                     {/* Reminder Time */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Reminder Time</span></label>
-                        <input type="time" name="reminderTime" value={formData.reminderTime} onChange={handleChange} required className="input input-bordered w-full" />
+                    <div>
+                        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>Reminder Time</label>
+                        <input type="time" name="reminderTime" value={formData.reminderTime} onChange={handleChange} required style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e9eef6', background: '#f3f4f6' }} />
                     </div>
                     
-                    {/* Image URL (Simple update for URL - for file upload, you'd need a separate handler) */}
-                    <div className="form-control">
-                        <label className="label"><span className="label-text">Image URL (Optional)</span></label>
-                        <input type="url" name="image" value={formData.image || ''} onChange={handleChange} className="input input-bordered w-full" placeholder="Enter new image URL" />
-                        {formData.image && <p className="text-xs mt-1 text-gray-500">Current Image: <a href={formData.image} target="_blank" rel="noopener noreferrer" className="text-blue-500 truncate">{formData.image.substring(0, 50)}...</a></p>}
+                    {/* Image URL */}
+                    <div>
+                        <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#111827', marginBottom: '8px' }}>Image URL (Optional)</label>
+                        <input type="url" name="image" value={formData.image || ''} onChange={handleChange} style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #e9eef6', background: '#f3f4f6' }} placeholder="Enter new image URL" />
+                        {formData.image && <p style={{ fontSize: '12px', marginTop: '8px', color: '#6b7280' }}>Current Image: <a href={formData.image} target="_blank" rel="noopener noreferrer" style={{ color: '#3b82f6', textDecoration: 'underline' }}>{formData.image.substring(0, 50)}...</a></p>}
                     </div>
                     
                     {/* Is Public Checkbox */}
-                    <div className="form-control flex flex-row items-center space-x-2">
-                        <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} className="checkbox checkbox-primary" id="isPublicCheck" />
-                        <label htmlFor="isPublicCheck" className="label cursor-pointer"><span className="label-text">Make Public (Allow others to browse)</span></label>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <input type="checkbox" name="isPublic" checked={formData.isPublic} onChange={handleChange} id="isPublicCheck" style={{ width: '18px', height: '18px' }} />
+                        <label htmlFor="isPublicCheck" style={{ fontSize: '13px', color: '#111827', cursor: 'pointer', margin: 0 }}>Make Public (Allow others to browse)</label>
                     </div>
 
                     {/* Non-editable User Info (Display only) */}
-                    <p className="text-sm text-gray-500">
-                        **Created By:** {habit.userName} ({habit.userEmail})
+                    <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+                        <strong>Created By:</strong> {habit.userName} ({habit.userEmail})
                     </p>
 
                     {/* Submit Button */}
-                    <button type="submit" disabled={isSubmitting} className="btn btn-primary w-full mt-6">
+                    <button type="submit" disabled={isSubmitting} style={{ padding: '12px 16px', marginTop: '12px', background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', border: 'none', borderRadius: '8px', fontSize: '14px', fontWeight: 600, cursor: isSubmitting ? 'not-allowed' : 'pointer', opacity: isSubmitting ? 0.7 : 1 }}>
                         {isSubmitting ? 'Saving...' : 'Save Changes'}
                     </button>
                 </form>

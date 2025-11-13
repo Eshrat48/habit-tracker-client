@@ -1,9 +1,8 @@
 // src/pages/Home.jsx
 
 import React from 'react';
-import HeroBanner from '../components/HeroBanner'; 
-// Placeholder for the next component you will build
-// import FeaturedHabits from '../components/FeaturedHabits'; 
+import HeroBanner from '../components/HeroBanner';
+import FeaturedHabits from '../components/FeaturedHabits';
 import Testimonials from '../components/Testimonials';
 import WhyBuildHabits from '../components/WhyBuildHabits';
 import HowItWorks from '../components/HowItWorks';
@@ -18,18 +17,8 @@ const Home = () => {
 
       {/* --- */}
 
-      {/* 2. FEATURED HABITS SECTION (6 newest public habits) [cite: 39, 43] */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-extrabold text-center mb-12 text-gray-800">
-            🔥 Featured Habits
-          </h2>
-          {/* This is where the FeaturedHabits component will go */}
-          {/* <FeaturedHabits /> */}
-        </div>
-      </section>
-
-      {/* --- */}
+      {/* 2. FEATURED HABITS SECTION (6 newest public habits) */}
+      <FeaturedHabits />
       
       {/* 3. WHY BUILD HABITS SECTION (Static content) [cite: 50] */}
       <section className="py-16 bg-gray-50">

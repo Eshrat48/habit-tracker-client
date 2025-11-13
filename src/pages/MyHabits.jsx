@@ -113,79 +113,95 @@ const MyHabits = () => {
     };
 
     if (loading || authLoading) {
-        return <div className="text-center py-10">Loading your habits...</div>;
+        return (
+            <div style={{ padding: '60px 20px', textAlign: 'center' }}>
+                <div style={{ display: 'inline-block', width: '40px', height: '40px', border: '4px solid #e5e7eb', borderTop: '4px solid #6366f1', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                <p style={{ marginTop: '16px', fontSize: '16px', color: '#6b7280' }}>Loading your habits...</p>
+                <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+            </div>
+        );
     }
 
     if (!user) {
-        return <div className="text-center py-10 text-red-500">Please sign in to view your habits.</div>;
+        return <div style={{ textAlign: 'center', padding: '40px 20px', color: '#dc2626' }}>Please sign in to view your habits.</div>;
     }
     
     // --- Render ---
     return (
-        <div className="container mx-auto p-4">
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 700 }}>My Habits ({habits.length})</h1>
-                <Link to="/add-habit" style={{ background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '8px 12px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>+ Add Habit</Link>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                <h1 style={{ fontSize: '28px', fontWeight: 700, color: '#111827', margin: 0 }}>My Habits ({habits.length})</h1>
+                <Link to="/add-habit" style={{ background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '10px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '14px' }}>+ Add Habit</Link>
             </div>
             
             {habits.length === 0 ? (
                 <div style={{ padding: '28px', border: '1px solid #e6e6f2', borderRadius: '12px', background: '#ffffff' }}>
-                        <div style={{ height: '260px', border: '1px solid #eef2f7', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
+                    <div style={{ height: '260px', border: '1px solid #eef2f7', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
                         <div style={{ width: '68px', height: '68px', borderRadius: '9999px', background: 'rgba(99,102,241,0.08)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             <span style={{ fontSize: '28px', color: '#6366f1' }}>+</span>
                         </div>
                         <div style={{ textAlign: 'center' }}>
-                            <p style={{ fontWeight: 600, marginBottom: '6px' }}>No habits yet.</p>
-                            <p style={{ color: '#6b7280', fontSize: '13px' }}>Create your first habit to start building better routines</p>
+                            <p style={{ fontWeight: 600, marginBottom: '6px', margin: 0 }}>No habits yet.</p>
+                            <p style={{ color: '#6b7280', fontSize: '13px', margin: 0 }}>Create your first habit to start building better routines</p>
                         </div>
-                        <Link to="/add-habit" style={{ marginTop: '6px', background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '8px 14px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600 }}>+ Create Habit</Link>
+                        <Link to="/add-habit" style={{ marginTop: '6px', background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '8px 14px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '13px' }}>+ Create Habit</Link>
                     </div>
                 </div>
             ) : (
-                <div className="overflow-x-auto shadow-xl rounded-lg">
-                    <table className="table w-full bg-white">
+                <div style={{ overflowX: 'auto', boxShadow: '0 20px 25px rgba(0,0,0,0.1)', borderRadius: '8px' }}>
+                    <table style={{ width: '100%', borderCollapse: 'collapse', background: '#fff' }}>
                         {/* Table Head */}
                         <thead>
-                            <tr className="bg-gray-100 text-gray-700">
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Current Streak</th>
-                                <th>Created On</th>
-                                <th>Actions</th>
+                            <tr style={{ background: '#f3f4f6', borderBottom: '1px solid #e5e7eb' }}>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Title</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Category</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Current Streak</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Created On</th>
+                                <th style={{ padding: '16px', textAlign: 'left', fontWeight: 600, color: '#374151', fontSize: '13px' }}>Actions</th>
                             </tr>
                         </thead>
                         
                         {/* Table Body */}
                         <tbody>
-                            {habits.map(habit => (
-                                <tr key={habit._id}>
-                                    <td className="font-semibold">{habit.title}</td>
-                                    <td>{habit.category}</td>
-                                    <td>
-                                        <div className="badge badge-lg badge-accent text-white">
-                                            {calculateStreak(habit.completionHistory)} Days
-                                        </div>
+                            {habits.map((habit, idx) => (
+                                <tr key={habit._id} style={{ borderBottom: '1px solid #e5e7eb', hover: { background: '#f9fafb' } }} onMouseEnter={(e) => e.currentTarget.style.background = '#f9fafb'} onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}>
+                                    <td style={{ padding: '16px', fontWeight: 600, color: '#111827', fontSize: '14px' }}>{habit.title}</td>
+                                    <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px' }}>
+                                        <span style={{ display: 'inline-block', padding: '4px 10px', background: 'rgba(99,102,241,0.1)', color: '#6366f1', fontSize: '12px', fontWeight: 600, borderRadius: '4px' }}>{habit.category}</span>
                                     </td>
-                                    <td>{new Date(habit.createdAt).toLocaleDateString()}</td>
-                                    <td className="flex space-x-2">
-                                        <button 
-                                            className="btn btn-sm btn-info text-white"
-                                            onClick={() => handleOpenModal(habit)}
-                                        >
-                                            Update
-                                        </button>
-                                        <button 
-                                            className="btn btn-sm btn-success text-white"
-                                            onClick={() => handleComplete(habit._id)}
-                                        >
-                                            Complete
-                                        </button>
-                                        <button 
-                                            className="btn btn-sm btn-error text-white"
-                                            onClick={() => handleDelete(habit._id)}
-                                        >
-                                            Delete
-                                        </button>
+                                    <td style={{ padding: '16px', fontSize: '14px' }}>
+                                        <span style={{ display: 'inline-block', padding: '6px 12px', background: '#fef08a', color: '#854d0e', fontSize: '13px', fontWeight: 600, borderRadius: '4px' }}>
+                                            {calculateStreak(habit.completionHistory)} Days
+                                        </span>
+                                    </td>
+                                    <td style={{ padding: '16px', color: '#6b7280', fontSize: '14px' }}>{new Date(habit.createdAt).toLocaleDateString()}</td>
+                                    <td style={{ padding: '16px' }}>
+                                        <div style={{ display: 'flex', gap: '8px' }}>
+                                            <button 
+                                                onClick={() => handleOpenModal(habit)}
+                                                style={{ padding: '6px 12px', background: '#3b82f6', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                onMouseEnter={(e) => e.target.style.background = '#2563eb'}
+                                                onMouseLeave={(e) => e.target.style.background = '#3b82f6'}
+                                            >
+                                                Update
+                                            </button>
+                                            <button 
+                                                onClick={() => handleComplete(habit._id)}
+                                                style={{ padding: '6px 12px', background: '#10b981', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                onMouseEnter={(e) => e.target.style.background = '#059669'}
+                                                onMouseLeave={(e) => e.target.style.background = '#10b981'}
+                                            >
+                                                Complete
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDelete(habit._id)}
+                                                style={{ padding: '6px 12px', background: '#ef4444', color: '#fff', border: 'none', borderRadius: '6px', cursor: 'pointer', fontSize: '12px', fontWeight: 600 }}
+                                                onMouseEnter={(e) => e.target.style.background = '#dc2626'}
+                                                onMouseLeave={(e) => e.target.style.background = '#ef4444'}
+                                            >
+                                                Delete
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))}
@@ -207,30 +223,3 @@ const MyHabits = () => {
 };
 
 export default MyHabits;
-
-// src/api/habitApi.js (Add this new function)
-
-// ... (keep existing imports and functions: fetchMyHabits, deleteHabit, etc.) ...
-
-/**
- * Creates a new habit (requires authentication token).
- * @param {object} habitData - The habit fields (title, category, etc.).
- * @param {string} token - Firebase ID token.
- */
-export const createHabit = async (habitData, token) => {
-    try {
-        // Calls POST http://localhost:3000/api/v1/habits
-        const response = await axios.post(API_URL, habitData, {
-            headers: {
-                Authorization: `Bearer ${token}`, // Attach token for verifyToken middleware
-                'Content-Type': 'application/json'
-            }
-        });
-        return response.data;
-    } catch (error) {
-        console.error('Error creating habit:', error);
-        throw error;
-    }
-};
-
-// ... (export other functions)

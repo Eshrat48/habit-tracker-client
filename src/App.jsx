@@ -12,6 +12,7 @@ import ErrorPage from './pages/ErrorPage';
 import AddHabit from './pages/AddHabit'; 
 import MyHabits from './pages/MyHabits'; 
 import BrowsePublicHabits from './pages/BrowsePublicHabits';
+import HabitDetail from './pages/HabitDetail';
 
 // 1. Define Routes
 const router = createBrowserRouter([
@@ -52,6 +53,14 @@ const router = createBrowserRouter([
             <MyHabits />
         </PrivateRoute>
     ),
+},
+{
+    path: "/habit-detail/:id", // :id is the MongoDB habit ID
+    element: (
+        <PrivateRoute>
+            <HabitDetail />
+        </PrivateRoute>
+    ), 
 },
     ],
   },

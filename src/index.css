@@ -1,7 +1,4 @@
-
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
-
+/* Tailwind CSS v4 via Vite plugin - no @import directives needed */
 /* Force light theme by default */
 :root {
   color-scheme: light;

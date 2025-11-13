@@ -6,13 +6,14 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3000/api/v1/habits';
 
 /**
- * Fetches the 6 newest public habits for the Home Page's Featured Section.
+ * @desc Fetches the 6 newest public habits for the Home Page's Featured Section.
+ * @route GET /api/v1/habits/featured
+ * @access Public
  */
 export const fetchFeaturedHabits = async () => {
     try {
-        // Calls GET http://localhost:3000/api/v1/habits/featured
         const response = await axios.get(`${API_URL}/featured`);
-        // We return the 'data' array from the server's standard response { success: true, data: [...] }
+        // The server returns { success: true, data: [...] }
         return response.data.data; 
     } catch (error) {
         console.error('Error fetching featured habits:', error);
@@ -20,22 +21,31 @@ export const fetchFeaturedHabits = async () => {
     }
 };
 
-// Placeholder for other functions (e.g., fetchPublicHabits, createHabit, etc.)
-// ...
+/**
+ * @desc Fetches all public habits (for Browse Public Habits page).
+ * @route GET /api/v1/habits/public
+ * @access Public
+ */
+export const fetchPublicHabits = async () => {
+    try {
+        const response = await axios.get(`${API_URL}/public`);
+        return response.data.data;
+    } catch (error) {
+        console.error('Error fetching public habits:', error);
+        throw error;
+    }
+};
 
-// src/api/habitApi.js
-
-// ... (keep the existing imports and API_URL definition) ...
-// import axios from 'axios';
-// const API_URL = 'http://localhost:3000/api/v1/habits';
-
-// 👇 NEW: Fetches the user's private habits
+/**
+ * @desc Fetches the user's private habits.
+ * @route GET /api/v1/habits/my
+ * @access Private (Requires token)
+ */
 export const fetchMyHabits = async (token) => {
     try {
-        // Calls GET http://localhost:3000/api/v1/habits/my
         const response = await axios.get(`${API_URL}/my`, {
             headers: {
-                Authorization: `Bearer ${token}` // Attach token for verifyToken middleware
+                Authorization: `Bearer ${token}`
             }
         });
         return response.data.data; 
@@ -46,32 +56,60 @@ export const fetchMyHabits = async (token) => {
 };
 
 /**
- * Creates a new habit (requires authentication token).
- * * 👇 THIS IS THE MISSING FUNCTION
+ * @desc Fetches the details for a single habit by ID.
+ * @route GET /api/v1/habits/:id
+ * @access Private (Requires token)
+ */
+export const fetchHabitDetail = async (habitId, token) => {
+    try {
+        const response = await axios.get(`${API_URL}/${habitId}`, {
+            headers: {
+                Authorization: `Bearer ${token}` 
+            }
+        });
+        // Returns the single habit object
+        return response.data.data; 
+    } catch (error) {
+        console.error(`Error fetching habit ${habitId}:`, error);
+        throw error;
+    }
+};
+
+/**
+ * @desc Creates a new habit.
+ * @route POST /api/v1/habits
+ * @access Private (Requires token)
  */
 export const createHabit = async (habitData, token) => {
     try {
-        // Calls POST http://localhost:3000/api/v1/habits
+        console.log('CreateHabit - Sending data:', habitData);
+        console.log('CreateHabit - Token:', token ? `${token.substring(0, 20)}...` : 'NO TOKEN');
         const response = await axios.post(API_URL, habitData, {
             headers: {
                 Authorization: `Bearer ${token}`, 
                 'Content-Type': 'application/json'
             }
         });
+        console.log('CreateHabit - Success response:', response.data);
         return response.data;
     } catch (error) {
         console.error('Error creating habit:', error);
+        console.error('Error status:', error?.response?.status);
+        console.error('Error data:', error?.response?.data);
         throw error;
     }
 };
 
-// 👇 NEW: Deletes a habit by ID
+/**
+ * @desc Deletes a habit by ID.
+ * @route DELETE /api/v1/habits/:id
+ * @access Private (Requires token)
+ */
 export const deleteHabit = async (habitId, token) => {
     try {
-        // Calls DELETE http://localhost:3000/api/v1/habits/:id
         const response = await axios.delete(`${API_URL}/${habitId}`, {
             headers: {
-                Authorization: `Bearer ${token}` // Attach token
+                Authorization: `Bearer ${token}`
             }
         });
         return response.data;
@@ -81,14 +119,17 @@ export const deleteHabit = async (habitId, token) => {
     }
 };
 
-// 👇 NEW: Updates a habit by ID
+/**
+ * @desc Updates a habit by ID.
+ * @route PATCH /api/v1/habits/:id
+ * @access Private (Requires token)
+ */
 export const updateHabit = async (habitId, habitData, token) => {
     try {
-        // Calls PATCH http://localhost:3000/api/v1/habits/:id
         const response = await axios.patch(`${API_URL}/${habitId}`, habitData, {
             headers: {
-                Authorization: `Bearer ${token}`, // Attach token
-                'Content-Type': 'application/json' // Ensure correct content type
+                Authorization: `Bearer ${token}`, 
+                'Content-Type': 'application/json'
             }
         });
         return response.data;
@@ -98,13 +139,16 @@ export const updateHabit = async (habitId, habitData, token) => {
     }
 };
 
-// 👇 NEW: Marks a habit complete for today
+/**
+ * @desc Marks a habit complete for today.
+ * @route PATCH /api/v1/habits/:id/complete
+ * @access Private (Requires token)
+ */
 export const completeHabit = async (habitId, token) => {
     try {
-        // Calls PATCH http://localhost:3000/api/v1/habits/:id/complete
         const response = await axios.patch(`${API_URL}/${habitId}/complete`, null, {
             headers: {
-                Authorization: `Bearer ${token}`, // Attach token
+                Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
             }
         });
@@ -114,5 +158,3 @@ export const completeHabit = async (habitId, token) => {
         throw error;
     }
 };
-
-// ... (export other functions) ...

@@ -41,6 +41,16 @@ const AddHabit = () => {
             return;
         }
 
+        // Validate form
+        if (!formData.title.trim()) {
+            toast.error('Habit title is required.');
+            return;
+        }
+        if (!formData.description.trim()) {
+            toast.error('Habit description is required.');
+            return;
+        }
+
         setIsSubmitting(true);
         const submitToastId = toast.loading('Adding your new habit...');
 
@@ -61,10 +71,15 @@ const AddHabit = () => {
             }
 
             const habitData = {
-                ...formData,
+                title: formData.title.trim(),
+                description: formData.description.trim(),
+                category: formData.category,
+                reminderTime: formData.reminderTime,
                 image: imageUrl,
+                isPublic: formData.isPublic,
             };
 
+            console.log('About to send habit data:', habitData);
             await createHabit(habitData, token);
             
             toast.success('Habit added successfully! Time to get started.', { id: submitToastId });
@@ -72,7 +87,9 @@ const AddHabit = () => {
 
         } catch (error) {
             console.error('Habit creation failed:', error);
-            const errorMessage = error?.response?.data?.message || 'Failed to create habit.';
+            console.error('Error response:', error?.response?.data);
+            console.error('Error status:', error?.response?.status);
+            const errorMessage = error?.response?.data?.message || error?.message || 'Failed to create habit.';
             toast.error(errorMessage, { id: submitToastId });
         } finally {
             setIsSubmitting(false);
