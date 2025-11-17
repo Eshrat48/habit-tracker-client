@@ -6,7 +6,7 @@ import axios from 'axios';
 import LoadingSpinner from '../components/LoadingSpinner';
 import useTheme from '../hooks/useTheme'; 
 
-const API_URL = 'http://localhost:3000/api/v1/habits';
+const API_URL = 'https://habit-tracker-server-pi.vercel.app/api/v1/habits';
 
 const BrowsePublicHabits = () => {
     const { theme } = useTheme(); 
