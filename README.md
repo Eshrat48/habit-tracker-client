@@ -58,9 +58,57 @@ The Habit Tracker is a modern, single-page application (SPA) designed to help us
 
 ---
 
+## Dependencies
+
+This project uses the following dependencies:
+
+- React.js  
+- React Router DOM  
+- Axios  
+- Tailwind CSS + DaisyUI  
+- Firebase Auth & Firebase Admin SDK  
+- React Hot Toast  
+- Framer Motion  
+- MongoDB  
+- Node.js & Express.js  
+
+> Node.js and npm or Yarn must be installed to run this project locally.
+
+---
+
+## Local Setup / Run Instructions
+
+1. **Clone the repository**
+- Client-side: git clone https://github.com/Eshrat48/habit-tracker-client.git
+- cd habit-tracker-client
+- Backend (optional if you want to run locally): git clone https://github.com/Eshrat48/habit-tracker-server.git
+- cd habit-tracker-server
+
+2. **Install Dependensies**
+- npm install
+- Or using Yarn:
+yarn
+
+3. **Start the development server**
+-npm start
+-Or using Yarn:
+yarn start
+
+4. **Open the app in your browser**
+
+**Notes:**
+
+- User authentication persists across page reloads.
+- All habits and task completions are tracked in MongoDB.
+- Toast notifications display success/error/loading states.
+- Supports full navigation with loading animations and custom error pages.
+  
+---
+
 ## Live Demo
 
-**Live Site:** https://habit-tracker24.netlify.app/
+- **Frontend Live Site:** https://habit-tracker24.netlify.app/
+- **Backend Live Site:** https://habit-tracker-server-pi.vercel.app/
 
 **Repository:** 
 - Client-side GitHub repository: https://github.com/Eshrat48/habit-tracker-client.git 
