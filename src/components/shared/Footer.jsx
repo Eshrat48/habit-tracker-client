@@ -132,17 +132,23 @@ const Footer = () => {
                                 <span>support@habittracker.com</span>
                             </div>
                             <Link 
-                                to="/terms" 
+                                to="/about" 
                                 style={getLinkStyle(baseTextColor)}
                                 onMouseEnter={e => e.currentTarget.style.color = hoverLinkColor}
                                 onMouseLeave={e => e.currentTarget.style.color = baseTextColor}
-                            >Terms & Conditions</Link>
+                            >About Us</Link>
                             <Link 
-                                to="/privacy" 
+                                to="/contact" 
                                 style={getLinkStyle(baseTextColor)}
                                 onMouseEnter={e => e.currentTarget.style.color = hoverLinkColor}
                                 onMouseLeave={e => e.currentTarget.style.color = baseTextColor}
-                            >Privacy Policy</Link>
+                            >Contact Us</Link>
+                            <Link 
+                                to="/privacy-terms" 
+                                style={getLinkStyle(baseTextColor)}
+                                onMouseEnter={e => e.currentTarget.style.color = hoverLinkColor}
+                                onMouseLeave={e => e.currentTarget.style.color = baseTextColor}
+                            >Privacy & Terms</Link>
                         </div>
                     </div>
                     

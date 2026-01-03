@@ -114,8 +114,7 @@ const HeroBanner = () => {
               <div style={{ 
                   color: 'white', 
                   padding: '0 2rem', 
-                  maxWidth: '90%', 
-                  '@media (min-width: 768px)': { maxWidth: '50%' }, 
+                  maxWidth: '90%',
                   textAlign: 'center' 
               }}>
                 <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '1rem', lineHeight: '1.2' }}>
