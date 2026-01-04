@@ -149,10 +149,10 @@ const MyHabits = () => {
     
     // --- Render ---
     return (
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px', minHeight: '100vh', background: colors.pageBg }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                <h1 style={{ fontSize: '28px', fontWeight: 700, color: colors.primaryText, margin: 0 }}>My Habits ({habits.length})</h1>
-                <Link to="/add-habit" style={{ background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '10px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '14px' }}>+ Add Habit</Link>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: 'clamp(1rem, 3vw, 1.25rem)', minHeight: '100vh', background: colors.pageBg }}>
+            <div style={{ display: 'flex', flexDirection: window.innerWidth < 640 ? 'column' : 'row', justifyContent: 'space-between', alignItems: window.innerWidth < 640 ? 'stretch' : 'center', marginBottom: 'clamp(1rem, 3vw, 1.5rem)', gap: '1rem' }}>
+                <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 1.75rem)', fontWeight: 700, color: colors.primaryText, margin: 0 }}>My Habits ({habits.length})</h1>
+                <Link to="/add-habit" style={{ background: 'linear-gradient(90deg,#6366f1,#a855f7)', color: '#fff', padding: '10px 16px', borderRadius: '8px', textDecoration: 'none', fontWeight: 600, fontSize: '14px', textAlign: 'center', whiteSpace: 'nowrap' }}>+ Add Habit</Link>
             </div>
             
             {habits.length === 0 ? (

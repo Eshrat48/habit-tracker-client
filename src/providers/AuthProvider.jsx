@@ -26,12 +26,16 @@ const AuthProvider = ({ children }) => {
     // --- Authentication Methods ---
     
     // Email/Password Registration
-    const createUser = (email, password) => {
+    const createUser = async (email, password) => {
         if (!auth) {
             return Promise.reject(new Error('Firebase is not initialized. Please check your .env.local file has all Firebase credentials.'));
         }
         setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password);
+        try {
+            return await createUserWithEmailAndPassword(auth, email, password);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Update User Profile
@@ -46,12 +50,16 @@ const AuthProvider = ({ children }) => {
     };
 
     // Email/Password Login
-    const signIn = (email, password) => {
+    const signIn = async (email, password) => {
         if (!auth) {
             return Promise.reject(new Error('Firebase is not initialized. Please check your .env.local file has all Firebase credentials.'));
         }
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password);
+        try {
+            return await signInWithEmailAndPassword(auth, email, password);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // Google Login
@@ -106,12 +114,16 @@ const AuthProvider = ({ children }) => {
     };
 
     // Log Out
-    const logOut = () => {
+    const logOut = async () => {
         if (!auth) {
             return Promise.reject(new Error('Firebase is not initialized.'));
         }
         setLoading(true);
-        return signOut(auth);
+        try {
+            return await signOut(auth);
+        } finally {
+            setLoading(false);
+        }
     };
 
     // --- User State Observer ---

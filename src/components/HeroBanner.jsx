@@ -64,7 +64,7 @@ const HeroBanner = () => {
   };
 
   return (
-    <section className="w-full" style={{ height: '720px', position: 'relative' }}>
+    <section className="w-full" style={{ height: 'clamp(350px, 60vh, 500px)', position: 'relative' }}>
       <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
         {/* Slide Container */}
         {slidesData.map((slide, idx) => (
@@ -113,23 +113,24 @@ const HeroBanner = () => {
             >
               <div style={{ 
                   color: 'white', 
-                  padding: '0 2rem', 
+                  padding: '0 1rem', 
                   maxWidth: '90%',
                   textAlign: 'center' 
               }}>
-                <h1 style={{ fontSize: '3.5rem', fontWeight: 'bold', marginBottom: '1rem', lineHeight: '1.2' }}>
+                <h1 style={{ fontSize: 'clamp(1.75rem, 5vw, 3.5rem)', fontWeight: 'bold', marginBottom: 'clamp(0.5rem, 2vw, 1rem)', lineHeight: '1.2' }}>
                   {slide.title}
                 </h1>
-                <p style={{ fontSize: '1.25rem', marginBottom: '2rem', opacity: 0.95 }}>
+                <p style={{ fontSize: 'clamp(0.875rem, 2vw, 1.25rem)', marginBottom: 'clamp(1rem, 3vw, 2rem)', opacity: 0.95 }}>
                   {slide.subtitle}
                 </p>
                 <button
                     onClick={() => handleButtonClick(slide.route)}
                     style={{
-                      padding: '0.75rem 1.5rem',
+                      padding: 'clamp(0.5rem, 2vw, 0.75rem) clamp(1rem, 3vw, 1.5rem)',
                       backgroundColor: buttonBaseColor, 
                       color: buttonTextColor, 
                       fontWeight: '600',
+                      fontSize: 'clamp(0.875rem, 2vw, 1rem)',
                       border: 'none',
                       borderRadius: '0.5rem',
                       cursor: 'pointer',

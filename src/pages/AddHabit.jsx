@@ -112,7 +112,7 @@ const AddHabit = () => {
             console.log('Backend response:', response);
             
             toast.success('Habit added successfully! Time to get started.', { id: submitToastId });
-            navigate('/my-habits');
+            navigate('/dashboard/my-habits');
 
         } catch (error) {
             console.error('Habit creation failed:', error);
@@ -170,13 +170,14 @@ const AddHabit = () => {
     
     // --- Render ---
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', padding: '28px' }}>
+        <div style={{ display: 'flex', justifyContent: 'center', padding: 'clamp(1rem, 3vw, 1.75rem)' }}>
             <div 
                 style={{ 
-                    width: 520, 
+                    width: '100%',
+                    maxWidth: '520px',
                     background: formBoxBg, 
                     borderRadius: 12, 
-                    padding: 28, 
+                    padding: 'clamp(1.5rem, 3vw, 1.75rem)', 
                     boxShadow: isDark ? '0 10px 30px rgba(0,0,0,0.3)' : '0 10px 30px rgba(17,24,39,0.06)', 
                     border: `1px solid ${formBoxBorder}` 
                 }}
@@ -194,7 +195,7 @@ const AddHabit = () => {
 
                 <form onSubmit={handleSubmit}>
                     {/* Grid */}
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 40 }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(1rem, 3vw, 2.5rem)' }}>
                         {/* Title */}
                         <div>
                             <label style={{ fontSize: 13, fontWeight: 600, color: labelColor, display: 'block', marginBottom: 8 }}>Habit Title *</label> 

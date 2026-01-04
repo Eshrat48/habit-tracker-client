@@ -5,7 +5,9 @@ import { Toaster } from 'react-hot-toast';
 import AuthProvider from './providers/AuthProvider'; 
 import { ThemeProvider } from './providers/ThemeProvider';
 import MainLayout from './layouts/MainLayout';
+import DashboardLayout from './layouts/DashboardLayout';
 import PrivateRoute from './routes/PrivateRoute';
+import ScrollToTop from './components/ScrollToTop';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -17,6 +19,8 @@ import HabitDetail from './pages/HabitDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import PrivacyTerms from './pages/PrivacyTerms';
+import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 
 // 1. Define Routes
 const router = createBrowserRouter([
@@ -41,23 +45,6 @@ const router = createBrowserRouter([
         path: "/browse",
         element: <BrowsePublicHabits />,
       },
-      // PRIVATE ROUTES
-      {
-        path: "/add-habit",
-        element: (
-            <PrivateRoute>
-                <AddHabit />
-            </PrivateRoute>
-        ), 
-      },
-      {
-        path: "/my-habits",
-        element: (
-            <PrivateRoute>
-                <MyHabits />
-            </PrivateRoute>
-        ),
-      },
       {
         path: "/habit-detail/:id",
         element: (
@@ -81,6 +68,33 @@ const router = createBrowserRouter([
       {
         path: "*", 
         element: <ErrorPage />, 
+      },
+    ],
+  },
+  // DASHBOARD ROUTES (SEPARATE LAYOUT)
+  {
+    path: "/dashboard",
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
+    children: [
+      {
+        index: true,
+        element: <Dashboard />,
+      },
+      {
+        path: "my-habits",
+        element: <MyHabits />,
+      },
+      {
+        path: "add-habit",
+        element: <AddHabit />,
+      },
+      {
+        path: "profile",
+        element: <Profile />,
       },
     ],
   },

@@ -4,6 +4,7 @@ import React from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
 import Header from '../components/shared/Header'; 
 import Footer from '../components/shared/Footer'; 
+import ScrollToTop from '../components/ScrollToTop';
 import useTheme from '../hooks/useTheme';
 
 const MainLayout = () => {
@@ -21,6 +22,7 @@ const MainLayout = () => {
                 color: isDark ? '#e5e7eb' : '#1f2937', 
             }}
         > 
+            <ScrollToTop />
             
             {/* Header / Navbar */}
             <Header /> 

@@ -65,11 +65,11 @@ const Footer = () => {
         <footer style={{ 
             backgroundColor: footerBg, 
             borderTop: `1px solid ${footerBorder}`, 
-            paddingTop: '3rem', 
-            paddingBottom: '3rem' 
+            paddingTop: 'clamp(2rem, 4vw, 3rem)', 
+            paddingBottom: 'clamp(2rem, 4vw, 3rem)' 
         }}>
-            <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: '1rem', paddingRight: '1rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '4rem', marginBottom: '3rem' }}>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', paddingLeft: 'clamp(1rem, 3vw, 2rem)', paddingRight: 'clamp(1rem, 3vw, 2rem)' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 'clamp(2rem, 4vw, 4rem)', marginBottom: 'clamp(2rem, 3vw, 3rem)' }}>
                     <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
                             <img

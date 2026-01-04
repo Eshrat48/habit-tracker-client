@@ -16,6 +16,10 @@ const BrowsePublicHabits = () => {
     const [loading, setLoading] = useState(true);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState('newest'); // newest, oldest, title
+    const [creatorFilter, setCreatorFilter] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 8;
     const categories = ['All', 'Morning', 'Work', 'Fitness', 'Evening', 'Study'];
 
     const primaryColor = '#6366f1'; 
@@ -58,8 +62,32 @@ const BrowsePublicHabits = () => {
         const matchesSearch = habit.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                              habit.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
                              (habit.userName && habit.userName.toLowerCase().includes(searchTerm.toLowerCase()));
-        return matchesCategory && matchesSearch;
+        const matchesCreator = !creatorFilter || (habit.userName && habit.userName.toLowerCase().includes(creatorFilter.toLowerCase()));
+        return matchesCategory && matchesSearch && matchesCreator;
     });
+
+    // Sort habits
+    const sortedHabits = [...filteredHabits].sort((a, b) => {
+        if (sortBy === 'newest') {
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        } else if (sortBy === 'oldest') {
+            return new Date(a.createdAt) - new Date(b.createdAt);
+        } else if (sortBy === 'title') {
+            return a.title.localeCompare(b.title);
+        }
+        return 0;
+    });
+
+    // Pagination
+    const totalPages = Math.ceil(sortedHabits.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    const paginatedHabits = sortedHabits.slice(startIndex, endIndex);
+
+    const handlePageChange = (page) => {
+        setCurrentPage(page);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     if (loading) {
         return (
@@ -72,12 +100,12 @@ const BrowsePublicHabits = () => {
     }
 
     return (
-        <div style={{ padding: '32px 20px', background: bgColor, minHeight: '80vh' }}> 
+        <div style={{ padding: 'clamp(1.5rem, 4vw, 2rem) clamp(1rem, 3vw, 1.25rem)', background: bgColor, minHeight: '80vh' }}> 
             <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
                 {/* Header */}
-                <div style={{ marginBottom: '32px' }}>
-                    <h1 style={{ fontSize: '28px', fontWeight: 700, color: mainTitleColor, margin: 0 }}>Browse Public Habits</h1> 
-                    <p style={{ fontSize: '14px', color: subTextColor, marginTop: '8px' }}>Discover habits shared by the community</p> 
+                <div style={{ marginBottom: 'clamp(1.5rem, 3vw, 2rem)' }}>
+                    <h1 style={{ fontSize: 'clamp(1.5rem, 4vw, 1.75rem)', fontWeight: 700, color: mainTitleColor, margin: 0 }}>Browse Public Habits</h1> 
+                    <p style={{ fontSize: 'clamp(0.875rem, 2vw, 0.875rem)', color: subTextColor, marginTop: '0.5rem' }}>Discover habits shared by the community</p> 
                 </div>
 
                 {/* Search Bar */}
@@ -105,11 +133,14 @@ const BrowsePublicHabits = () => {
 
                 {/* Category Filter */}
                 <div style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '14px', fontWeight: 600, color: mainTitleColor }}>Filter:</span> 
+                    <span style={{ fontSize: '14px', fontWeight: 600, color: mainTitleColor }}>Category:</span> 
                     {categories.map(cat => (
                         <button 
                             key={cat}
-                            onClick={() => setSelectedCategory(cat)}
+                            onClick={() => {
+                                setSelectedCategory(cat);
+                                setCurrentPage(1);
+                            }}
                             style={{ 
                                 padding: '8px 16px', 
                                 borderRadius: '24px', 
@@ -137,8 +168,71 @@ const BrowsePublicHabits = () => {
                     ))}
                 </div>
 
+                {/* Creator Filter & Sorting */}
+                <div style={{ marginBottom: '24px', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px' }}>
+                    <div>
+                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: mainTitleColor, marginBottom: '8px' }}>
+                            Filter by Creator
+                        </label>
+                        <input
+                            type="text"
+                            placeholder="Enter creator name..."
+                            value={creatorFilter}
+                            onChange={(e) => {
+                                setCreatorFilter(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                width: '100%',
+                                padding: '10px 14px',
+                                fontSize: '14px',
+                                border: `1px solid ${inputBorder}`,
+                                borderRadius: '8px',
+                                background: inputBg,
+                                color: inputTextColor,
+                                outline: 'none',
+                                transition: 'border-color 0.2s'
+                            }}
+                            onFocus={(e) => e.target.style.borderColor = primaryColor}
+                            onBlur={(e) => e.target.style.borderColor = inputBorder}
+                        />
+                    </div>
+                    <div>
+                        <label style={{ display: 'block', fontSize: '14px', fontWeight: 600, color: mainTitleColor, marginBottom: '8px' }}>
+                            Sort By
+                        </label>
+                        <select
+                            value={sortBy}
+                            onChange={(e) => {
+                                setSortBy(e.target.value);
+                                setCurrentPage(1);
+                            }}
+                            style={{
+                                width: '100%',
+                                padding: '10px 14px',
+                                fontSize: '14px',
+                                border: `1px solid ${inputBorder}`,
+                                borderRadius: '8px',
+                                background: inputBg,
+                                color: inputTextColor,
+                                outline: 'none',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            <option value="newest">Newest First</option>
+                            <option value="oldest">Oldest First</option>
+                            <option value="title">Title (A-Z)</option>
+                        </select>
+                    </div>
+                </div>
+
+                {/* Results Count */}
+                <div style={{ marginBottom: '16px', fontSize: '14px', color: subTextColor }}>
+                    Showing {paginatedHabits.length} of {sortedHabits.length} habits
+                </div>
+
                 {/* Habits Grid or Empty State */}
-                {filteredHabits.length === 0 ? (
+                {sortedHabits.length === 0 ? (
                     <div style={{ 
                         border: `1px solid ${emptyStateBorder}`, 
                         borderRadius: '12px', 
@@ -148,11 +242,17 @@ const BrowsePublicHabits = () => {
                     }}>
                         <div style={{ fontSize: '64px', marginBottom: '16px' }}>🔍</div>
                         <p style={{ fontSize: '16px', color: mainTitleColor, fontWeight: 600, margin: 0 }}>No habits found</p> 
-                        <p style={{ fontSize: '14px', color: primaryColor, marginTop: '8px' }}>Be the first to share a public habit!</p>
+                        <p style={{ fontSize: '14px', color: primaryColor, marginTop: '8px' }}>Try adjusting your filters or search terms.</p>
                     </div>
                 ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '24px' }}>
-                        {filteredHabits.map((habit) => (
+                    <>
+                        <div style={{ 
+                            display: 'grid', 
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', 
+                            gap: 'clamp(1rem, 2vw, 1.5rem)',
+                            marginBottom: '2rem'
+                        }}>
+                            {paginatedHabits.map((habit) => (
                             <div 
                                 key={habit._id} 
                                 style={{ 
@@ -203,6 +303,90 @@ const BrowsePublicHabits = () => {
                             </div>
                         ))}
                     </div>
+
+                    {/* Pagination */}
+                    {totalPages > 1 && (
+                        <div style={{ 
+                            display: 'flex', 
+                            justifyContent: 'center', 
+                            alignItems: 'center', 
+                            gap: '8px',
+                            marginTop: '32px'
+                        }}>
+                            <button
+                                onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={currentPage === 1}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
+                                    border: `1px solid ${inputBorder}`,
+                                    background: cardBg,
+                                    color: currentPage === 1 ? subTextColor : mainTitleColor,
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                                    opacity: currentPage === 1 ? 0.5 : 1,
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                Previous
+                            </button>
+
+                            {[...Array(totalPages)].map((_, idx) => {
+                                const page = idx + 1;
+                                return (
+                                    <button
+                                        key={page}
+                                        onClick={() => handlePageChange(page)}
+                                        style={{
+                                            padding: '8px 12px',
+                                            borderRadius: '6px',
+                                            border: currentPage === page ? 'none' : `1px solid ${inputBorder}`,
+                                            background: currentPage === page ? primaryColor : cardBg,
+                                            color: currentPage === page ? '#fff' : mainTitleColor,
+                                            fontSize: '14px',
+                                            fontWeight: 600,
+                                            cursor: 'pointer',
+                                            transition: 'all 0.2s',
+                                            minWidth: '40px'
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            if (currentPage !== page) {
+                                                e.target.style.background = isDark ? '#374151' : '#f3f4f6';
+                                            }
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            if (currentPage !== page) {
+                                                e.target.style.background = cardBg;
+                                            }
+                                        }}
+                                    >
+                                        {page}
+                                    </button>
+                                );
+                            })}
+
+                            <button
+                                onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={currentPage === totalPages}
+                                style={{
+                                    padding: '8px 16px',
+                                    borderRadius: '6px',
+                                    border: `1px solid ${inputBorder}`,
+                                    background: cardBg,
+                                    color: currentPage === totalPages ? subTextColor : mainTitleColor,
+                                    fontSize: '14px',
+                                    fontWeight: 600,
+                                    cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                                    opacity: currentPage === totalPages ? 0.5 : 1,
+                                    transition: 'all 0.2s'
+                                }}
+                            >
+                                Next
+                            </button>
+                        </div>
+                    )}
+                </>
                 )}
             </div>
         </div>

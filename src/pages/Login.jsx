@@ -23,8 +23,7 @@ const Login = () => {
     const isFormValid = formData.email && formData.password;
 
     const mainBg = isDark ? '#111827' : '#f9fafb';
-    const cardBg = isDark ? '#1f2937' : '#ffffff';
-    const cardBorder = isDark ? '1px solid #374151' : '1px solid #eef2f7';
+    const cardBg = isDark ? '#1f2937' : '#ffffff';    const cardBorder = isDark ? '1px solid #374151' : '1px solid #eef2f7';
     const titleColor = isDark ? '#f9fafb' : '#0f172a';
     const subTextColor = isDark ? '#9ca3af' : '#6b7280';
     const labelText = isDark ? '#f3f4f6' : '#111827';
@@ -70,21 +69,16 @@ const Login = () => {
         navigate('/register');
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        
-        if (!isFormValid) return;
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setError('');
 
-        setIsSubmitting(true);
-        setError('');
+        const { email, password } = formData;
 
-        const { email, password } = formData;
-
-        try {
-            // 1. Sign In via Firebase Authentication
-            await signIn(email, password);
-            
-            toast.success('Login successful! Welcome back. 👋');
+        try {
+            // 1. Sign In via Firebase Authentication
+            await signIn(email, password);
             navigate('/');
 
         } catch (err) {
@@ -106,8 +100,8 @@ const Login = () => {
 
     // --- JSX Render ---
     return (
-        <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: mainBg, padding: '24px' }}>
-            <div style={{ 
+        <div style={{ minHeight: 'calc(100vh - 72px)', display: 'flex', alignItems: 'center', justifyContent: 'center', backgroundColor: mainBg, padding: 'clamp(1rem, 3vw, 1.5rem)' }}>
+            <div style={{ 
                 width: '100%', 
                 maxWidth: '420px', 
                 background: cardBg, 
@@ -117,9 +111,7 @@ const Login = () => {
                     : '0 8px 30px rgba(17,24,39,0.06)', 
                 border: cardBorder 
             }}>
-                <div style={{ padding: '28px' }}>
-                
-                    {/* Header */}
+                <div style={{ padding: 'clamp(1.5rem, 4vw, 1.75rem)' }}>
                     <div style={{ textAlign: 'center', marginBottom: '20px' }}>
                         <div style={{ 
                             margin: '0 auto', 
@@ -217,27 +209,22 @@ const Login = () => {
                         >
                             {isSubmitting ? 'Signing In...' : 'Sign In'}
                         </button>
-                        
-                        {/* Separator */}
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '8px' }}>
-                            <div style={{ flex: 1, height: '1px', background: separatorColor }}></div>
-                            <div style={{ fontSize: '12px', color: subTextColor }}>Or</div> 
-                            <div style={{ flex: 1, height: '1px', background: separatorColor }}></div> 
-                        </div>
 
-                        {/* Google Login Button */}
-                        <button 
-                            type="button" 
-                            onClick={handleGoogleLogin}
-                            disabled={isSubmitting}
-                            style={{ 
+                        {/* Separator */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '12px' }}>
+                            <div style={{ flex: 1, height: '1px', background: isDark ? '#374151' : '#e5e7eb' }}></div>
+                            <span style={{ fontSize: '12px', color: subTextColor }}>OR</span>
+                            <div style={{ flex: 1, height: '1px', background: isDark ? '#374151' : '#e5e7eb' }}></div>
+                        </div>
+
+                        {/* Google Sign In */}
+                        <button
+                            type="button"
+                            onClick={handleGoogleLogin}
+                            disabled={isSubmitting}
+                            style={{ 
                                 width: '100%', 
                                 display: 'flex', 
-                                alignItems: 'center', 
-                                justifyContent: 'center', 
-                                gap: '8px', 
-                                border: cardBorder, 
-                                borderRadius: '8px', 
                                 padding: '8px 10px', 
                                 background: cardBg, 
                                 color: labelText, 

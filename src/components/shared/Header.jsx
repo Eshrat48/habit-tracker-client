@@ -141,10 +141,28 @@ const Header = () => {
         Browse Public Habits
     </NavLink>
 
+    {!user && (
+        <NavLink 
+            to="/about" 
+            style={({ isActive }) => ({
+                color: isActive ? '#7c3aed' : theme === 'light' ? '#374151' : '#d1d5db',
+                textDecoration: 'none',
+                fontWeight: isActive ? '600' : '400',
+                borderBottom: isActive ? `2px solid #7c3aed` : 'none',
+                paddingBottom: '0.5rem',
+                transition: 'all 0.3s',
+                cursor: 'pointer',
+                padding: '0 1rem',
+            })}
+        >
+            About
+        </NavLink>
+    )}
+
     {user && (
         <>
             <NavLink 
-                to="/add-habit" 
+                to="/dashboard" 
                 style={({ isActive }) => ({
                     color: isActive ? '#7c3aed' : theme === 'light' ? '#374151' : '#d1d5db',
                     textDecoration: 'none',
@@ -156,22 +174,7 @@ const Header = () => {
                     padding: '0 1rem',
                 })}
             >
-                Add Habit
-            </NavLink>
-            <NavLink 
-                to="/my-habits" 
-                style={({ isActive }) => ({
-                    color: isActive ? '#7c3aed' : theme === 'light' ? '#374151' : '#d1d5db',
-                    textDecoration: 'none',
-                    fontWeight: isActive ? '600' : '400',
-                    borderBottom: isActive ? `2px solid #7c3aed` : 'none',
-                    paddingBottom: '0.5rem',
-                    transition: 'all 0.3s',
-                    cursor: 'pointer',
-                    padding: '0 1rem',
-                })}
-            >
-                My Habits
+                Dashboard
             </NavLink>
         </>
     )}
